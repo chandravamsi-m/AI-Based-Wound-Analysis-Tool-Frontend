@@ -1,0 +1,68 @@
+.splash-screen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.splash-logo {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  /* margin-bottom: 20px; */
+}
+
+.splash-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* gap: 12px; */
+  text-align: center;
+}
+
+.splash-title {
+  color: #000000;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.splash-subtitle {
+  color: #7295C4;
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.splash-loader {
+  /* margin-top: 40px; */
+  width: 52px;
+  height: 52px;
+  border: 4px solid #E5E7EB;
+  border-top: 4px solid #2D63A9;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
