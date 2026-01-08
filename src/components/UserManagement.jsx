@@ -483,6 +483,68 @@ function UserManagement() {
           </div>
         </div>
 
+        {/* Mobile Card View */}
+        <div className="um-card-list">
+          {currentData.length === 0 ? (
+            <div className="um-empty-state">
+              <p>No users found matching your criteria.</p>
+            </div>
+          ) : (
+            currentData.map((staff) => (
+              <div key={staff.id} className="um-user-card">
+                <div className="um-card-header">
+                  <div className="um-card-user-info">
+                    <div className="um-card-name">{staff.name}</div>
+                    <div className="um-card-email">{staff.email}</div>
+                  </div>
+                  <div className="um-card-actions">
+                    <button
+                      className="um-action-btn um-action-btn-edit"
+                      title="Edit"
+                      onClick={() => handleEditUser(staff)}
+                    >
+                      <Edit size={16} />
+                    </button>
+                    <button
+                      className="um-action-btn um-action-btn-delete"
+                      title="Delete"
+                      onClick={() => openDeleteModal(staff)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+                <div className="um-card-body">
+                  <div className="um-card-row">
+                    <span className="um-card-label">Role:</span>
+                    <span className="um-role-badge">{staff.role}</span>
+                  </div>
+                  <div className="um-card-row">
+                    <span className="um-card-label">Status:</span>
+                    <div className="um-status-cell">
+                      <label className="um-toggle">
+                        <input
+                          type="checkbox"
+                          checked={staff.isActive}
+                          onChange={() => handleToggleStatus(staff.id)}
+                        />
+                        <span className="um-toggle-slider"></span>
+                      </label>
+                      <span className={`um-status-label ${staff.isActive ? 'um-status-active' : 'um-status-disabled'}`}>
+                        {staff.status}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="um-card-row">
+                    <span className="um-card-label">Last Activity:</span>
+                    <span className="um-card-value">{staff.activity}</span>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
         {/* Footer */}
         <div className="um-footer">
           <div className="um-footer-notice">

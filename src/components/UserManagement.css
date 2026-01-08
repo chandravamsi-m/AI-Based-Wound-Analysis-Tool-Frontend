@@ -820,3 +820,391 @@
 .um-password-toggle:focus {
   outline: none;
 }
+
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+
+/* Default: Hide card list on desktop */
+.um-card-list {
+  display: none;
+}
+
+/* Tablet Responsive (768px - 1023px) */
+@media (max-width: 1023px) {
+  .user-management {
+    padding: 16px 20px;
+    zoom: 0.85;
+  }
+
+  .um-title {
+    font-size: 22px;
+  }
+
+  .um-filters {
+    gap: 12px;
+  }
+
+  .um-table-container {
+    overflow-x: auto;
+  }
+}
+
+/* Mobile Responsive (below 768px) */
+@media (max-width: 767px) {
+  .user-management {
+    padding: 16px;
+    zoom: 1;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* Header */
+  .um-header-main {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .um-title {
+    font-size: 18px;
+    margin-bottom: 0;
+  }
+
+  .um-subtitle {
+    font-size: 11px;
+  }
+
+  .um-header-right {
+    width: auto;
+    justify-content: flex-end;
+  }
+
+  .um-btn-primary {
+    width: auto;
+    padding: 10px 16px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /* Filters / Toolbar */
+  .um-toolbar {
+    padding: 12px 16px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .um-toolbar-left {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .um-search {
+    flex: 1.5;
+    min-width: 0;
+  }
+
+  .um-filter {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .um-search-input,
+  .um-filter-select {
+    font-size: 12px;
+    padding: 8px 8px 8px 30px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .um-search-icon,
+  .um-filter-icon {
+    left: 8px !important;
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .um-toolbar-right {
+    display: none !important;
+  }
+
+  /* Hide table, show card layout */
+  .um-table-wrapper,
+  .um-table-container,
+  .um-table,
+  .um-table-header,
+  .um-table-body,
+  .um-table-row {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .um-card-list {
+    display: flex !important;
+    visibility: visible !important;
+  }
+
+  /* Card-based user list for mobile */
+  .um-card-list {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .um-user-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #E2E8F0;
+  }
+
+  .um-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .um-card-user-info {
+    flex: 1;
+  }
+
+  .um-card-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0F172A;
+    margin-bottom: 4px;
+  }
+
+  .um-card-email {
+    font-size: 13px;
+    color: #64748B;
+  }
+
+  .um-card-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .um-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .um-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .um-card-label {
+    color: #64748B;
+    font-weight: 500;
+  }
+
+  .um-card-value {
+    color: #0F172A;
+    font-weight: 600;
+  }
+
+  /* Footer */
+  .um-footer-notice {
+    font-size: 11px;
+    text-align: center;
+  }
+
+  /* Pagination */
+  .um-pagination {
+    gap: 12px;
+  }
+
+  .um-pagination-info {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .um-pagination-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .um-pagination-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    min-width: 80px;
+    flex: 1;
+    max-width: 150px;
+  }
+
+  /* Modals - Floating instead of full screen on mobile */
+  .um-modal-overlay {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Modals - Floating instead of full screen on mobile */
+  .um-modal-overlay {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .um-delete-modal,
+  .um-user-modal,
+  .um-modal-content {
+    width: 95%;
+    max-width: 440px;
+    height: auto;
+    max-height: 90vh;
+    margin: auto;
+    border-radius: 12px;
+    overflow-y: auto;
+    position: relative;
+    background: white;
+  }
+
+  .um-delete-modal-header,
+  .um-user-modal-header,
+  .um-modal-header {
+    padding: 16px 20px;
+  }
+
+  /* Specific styles for Delete Modal header on mobile */
+  .um-modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 12px 20px 4px;
+  }
+
+  .um-modal-icon-container {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 6px;
+  }
+
+  .um-modal-title {
+    font-size: 17px;
+  }
+
+  .um-delete-modal-header h2,
+  .um-user-modal-header h2 {
+    font-size: 17px;
+  }
+
+  .um-delete-modal-body,
+  .um-modal-body {
+    padding: 0 20px 8px;
+    text-align: center;
+  }
+
+  .um-modal-body p {
+    font-size: 13.5px;
+    margin-bottom: 6px;
+  }
+
+  .um-modal-warning {
+    font-size: 11.5px;
+    padding: 6px 10px;
+    margin-top: 2px;
+  }
+
+  .um-user-modal-body {
+    padding: 16px 20px;
+    max-height: calc(100vh - 140px);
+    text-align: left;
+  }
+
+  .um-delete-modal-footer,
+  .um-user-modal-footer,
+  .um-modal-footer {
+    padding: 4px 20px 12px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .um-btn-cancel-modal,
+  .um-btn-delete,
+  .um-btn-save,
+  .um-btn-cancel,
+  .um-btn-delete-confirm {
+    width: 100%;
+    justify-content: center;
+    padding: 10px;
+    font-size: 13.5px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+  }
+
+  /* Form elements - More compact */
+  .um-form-group {
+    margin-bottom: 14px;
+  }
+
+  .um-form-label {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .um-form-input,
+  .um-form-select {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  /* Touch-friendly buttons */
+  .um-action-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .um-btn-icon {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Very small mobile (below 375px) */
+@media (max-width: 374px) {
+  .user-management {
+    padding: 12px;
+  }
+
+  .um-title {
+    font-size: 18px;
+  }
+
+  .um-card-name {
+    font-size: 15px;
+  }
+
+  .um-pagination-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    min-width: 70px;
+  }
+}

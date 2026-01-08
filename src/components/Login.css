@@ -219,3 +219,85 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+  .login-screen {
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 100vh;
+  }
+
+  .login-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-bottom: 0;
+    padding: 24px 20px;
+    z-index: 10;
+  }
+
+  .login-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .login-brand-title {
+    font-size: 15px;
+  }
+
+  .login-brand-subtitle {
+    font-size: 10px;
+  }
+
+  .login-card {
+    margin: 0 20px;
+    padding: 28px 24px;
+    max-width: calc(100% - 40px);
+    align-self: center;
+  }
+
+  .login-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .login-title {
+    font-size: 20px;
+  }
+
+  .login-subtitle {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+
+  .login-label {
+    font-size: 12px;
+  }
+
+  .login-input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .login-options {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .login-remember {
+    font-size: 12px;
+  }
+
+  .login-forgot {
+    font-size: 12px;
+  }
+
+  .login-button {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
