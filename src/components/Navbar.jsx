@@ -1,9 +1,13 @@
-import { Search, HelpCircle, Bell, User } from 'lucide-react';
+import { Search, HelpCircle, Bell, User, Menu } from 'lucide-react';
 import './Navbar.css';
 
-function Navbar({ user }) {
+function Navbar({ user, onMenuToggle }) {
   return (
     <nav className="navbar">
+      <button className="navbar-menu-btn" onClick={onMenuToggle} aria-label="Toggle menu">
+        <Menu size={24} />
+      </button>
+
       <div className="navbar-title">Dashboard Overview</div>
 
       <div className="navbar-center">

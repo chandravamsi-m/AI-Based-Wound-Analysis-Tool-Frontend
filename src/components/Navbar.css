@@ -13,6 +13,25 @@
   z-index: 100;
 }
 
+/* Hamburger Menu Button (hidden on desktop) */
+.navbar-menu-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  color: #0F172A;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navbar-menu-btn:hover {
+  background: #F1F5F9;
+}
+
 .navbar-title {
   font-size: 20px;
   font-weight: 700;
@@ -141,4 +160,66 @@
   align-items: center;
   justify-content: center;
   color: #2d62a8;
+}
+
+/* Tablet Responsive */
+@media (max-width: 1023px) {
+  .navbar {
+    left: 200px;
+  }
+
+  .navbar-title {
+    font-size: 18px;
+    min-width: 150px;
+  }
+
+  .navbar-search {
+    max-width: 300px;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+  .navbar {
+    left: 0;
+    height: 60px;
+    padding: 0 16px;
+  }
+
+  .navbar-menu-btn {
+    display: flex;
+  }
+
+  .navbar-title {
+    font-size: 16px;
+    min-width: auto;
+    flex: 1;
+  }
+
+  .navbar-center {
+    display: none;
+  }
+
+  .navbar-right {
+    gap: 8px;
+  }
+
+  .navbar-icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .navbar-user {
+    padding-left: 8px;
+    border-left: none;
+  }
+
+  .navbar-user-info {
+    display: none;
+  }
+
+  .navbar-user-avatar {
+    width: 32px;
+    height: 32px;
+  }
 }

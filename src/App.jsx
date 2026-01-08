@@ -11,6 +11,7 @@ function App() {
   const [view, setView] = useState('splash') // 'splash', 'intro', 'login', 'app'
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentUser, setCurrentUser] = useState(null)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   // Check for existing authentication on mount
   useEffect(() => {
@@ -47,6 +48,14 @@ function App() {
     setView('login')
   }
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false)
+  }
+
   if (view === 'splash') {
     return <SplashScreen />
   }
@@ -61,8 +70,13 @@ function App() {
 
   return (
     <div className="app">
-      <Navbar user={currentUser} />
-      <Sidebar onSignOut={handleLogout} user={currentUser} />
+      <Navbar user={currentUser} onMenuToggle={toggleMobileMenu} />
+      <Sidebar
+        onSignOut={handleLogout}
+        user={currentUser}
+        isMobileOpen={isMobileMenuOpen}
+        onClose={closeMobileMenu}
+      />
       <main className="main-content">
         <UserManagement />
       </main>

@@ -1,16 +1,46 @@
-# React + Vite
+# AI-Based Wound Analysis Tool - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Modern, mobile-responsive React application for wound management and diagnosis.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework**: React 18
+- **Build Tool**: Vite
+- **Icons**: Lucide React
+- **Styling**: Vanilla CSS (Premium, Responsive)
 
-## React Compiler
+## Key Components
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **SplashScreen**: Animated loading screen with logo and entrance effects.
+- **IntroScreens**: Multi-step onboarding flow with clinical value propositions.
+- **Login**: Secure authentication screen with password visibility toggles.
+- **Sidebar**: Interactive navigation drawer with role-based identity display.
+- **Navbar**: Dynamic header showing current user and global actions.
+- **UserManagement**: Full CRUD interface for staff management, including:
+  - Smart search and filtering.
+  - Interactive data cards (Mobile) and tables (Desktop).
+  - Floating modals for add/edit/delete operations.
 
-## Expanding the ESLint configuration
+## Mobile Responsive Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Adaptive Breakpoints**: Custom media queries for 1024px (Tablet), 768px (Mobile), and 375px (Small Mobile).
+- **Edge-to-Edge Design**: Full-width imagery and compact layouts on small screens.
+- **Touch Ergonomics**: Minimum 44x44px hit areas for buttons and interactive elements.
+- **Dynamic UI Transformation**: Synchronized conversion from data tables to card-based lists on mobile.
+
+## Development Setup
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Start Dev Server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Build for Production**:
+   ```bash
+   npm run build
+   ```
