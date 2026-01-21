@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import './IntroScreens.css';
-import logo from '../assets/logo.svg';
-import onboarding1 from '../assets/onboarding 1.png';
-import onboarding2 from '../assets/onboarding 2.png';
-import onboarding3 from '../assets/onboarding 3.png';
+import logo from '../../../assets/logo.svg';
+import onboarding1 from '../../../assets/onboarding 1.png';
+import onboarding2 from '../../../assets/onboarding 2.png';
+import onboarding3 from '../../../assets/onboarding 3.png';
 
 const IntroScreens = ({ onFinished }) => {
   const [step, setStep] = useState(1);
