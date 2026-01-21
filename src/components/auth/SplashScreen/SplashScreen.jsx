@@ -1,6 +1,6 @@
 import React from 'react';
 import './SplashScreen.css';
-import logo from '../assets/logo.svg';
+import logo from '../../../assets/logo.svg';
 
 const SplashScreen = () => {
   return (

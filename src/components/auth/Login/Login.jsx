@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import './Login.css';
-import logo from '../assets/logo.svg';
-import lockIcon from '../assets/lock-icon.svg';
+import logo from '../../../assets/logo.svg';
+import lockIcon from '../../../assets/lock-icon.svg';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
