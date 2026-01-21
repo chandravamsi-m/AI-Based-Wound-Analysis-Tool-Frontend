@@ -497,16 +497,16 @@ function UserManagement() {
                     <div className="um-card-name">{staff.name}</div>
                     <div className="um-card-email">{staff.email}</div>
                   </div>
-                  <div className="um-card-actions">
+                  <div className="um-card-header-right">
                     <button
-                      className="um-action-btn um-action-btn-edit"
+                      className="um-action-btn-mobile um-edit-btn-mobile"
                       title="Edit"
                       onClick={() => handleEditUser(staff)}
                     >
                       <Edit size={16} />
                     </button>
                     <button
-                      className="um-action-btn um-action-btn-delete"
+                      className="um-action-btn-mobile um-delete-btn-mobile"
                       title="Delete"
                       onClick={() => openDeleteModal(staff)}
                     >

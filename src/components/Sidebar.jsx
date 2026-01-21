@@ -1,14 +1,21 @@
 import { LayoutDashboard, Users, FileText, HardDrive, Settings, Bell, LogOut } from 'lucide-react';
 import './Sidebar.css';
 
-function Sidebar({ onSignOut, user, isMobileOpen, onClose }) {
+function Sidebar({ onSignOut, user, isMobileOpen, onClose, currentView, onViewChange }) {
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', active: false },
-    { icon: Users, label: 'Role Management', active: false },
-    { icon: FileText, label: 'System Logs', active: false },
-    { icon: HardDrive, label: 'Storage', active: false },
-    { icon: Settings, label: 'Settings', active: true },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { id: 'users', icon: Users, label: 'User Management' },
+    { id: 'logs', icon: FileText, label: 'System Logs' },
+    { id: 'storage', icon: HardDrive, label: 'Storage' },
+    // { id: 'settings', icon: Settings, label: 'Settings' },
   ];
+
+  const handleItemClick = (viewId) => {
+    onViewChange(viewId);
+    if (isMobileOpen) {
+      onClose();
+    }
+  };
 
   return (
     <>
@@ -24,16 +31,19 @@ function Sidebar({ onSignOut, user, isMobileOpen, onClose }) {
             </div>
             <div className="brand-text">
               <div className="brand-name">MediWound AI</div>
-              <div className="brand-subtitle">{user?.role?.toUpperCase() || 'GUEST'}</div>
+              <div className="brand-subtitle">
+                {user?.role === 'Admin' ? 'HOSPITAL ADMIN' : 'CLINICIAN PORTAL'}
+              </div>
             </div>
           </div>
         </div>
 
         <nav className="sidebar-nav">
-          {menuItems.map((item, index) => (
+          {menuItems.map((item) => (
             <button
-              key={index}
-              className={`sidebar-item ${item.active ? 'sidebar-item-active' : ''}`}
+              key={item.id}
+              className={`sidebar-item ${currentView === item.id ? 'sidebar-item-active' : ''}`}
+              onClick={() => handleItemClick(item.id)}
             >
               <item.icon size={20} />
               <span>{item.label}</span>
@@ -45,12 +55,14 @@ function Sidebar({ onSignOut, user, isMobileOpen, onClose }) {
           <button className="sidebar-item sidebar-alerts">
             <Bell size={20} />
             <span>Alerts</span>
-            {/* <span className="sidebar-badge">2</span> */}
           </button>
         </div>
 
         <div className="sidebar-footer">
-          <button className="sidebar-item">
+          <button
+            className={`sidebar-item ${currentView === 'settings' ? 'sidebar-item-active' : ''}`}
+            onClick={() => handleItemClick('settings')}
+          >
             <Settings size={20} />
             <span>Settings</span>
           </button>
