@@ -974,8 +974,44 @@
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #F1F5F9;
+    padding-bottom: 4px;
+  }
+
+  .um-card-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .um-action-btn-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    color: #64748B;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .um-edit-btn-mobile:hover {
+    background: #EFF6FF;
+    border-color: #BFDBFE;
+    color: #2D62A8;
+  }
+
+  .um-delete-btn-mobile {
+    color: #EF4444;
+  }
+
+  .um-delete-btn-mobile:hover {
+    background: #FEF2F2;
+    border-color: #FECACA;
+    color: #DC2626;
   }
 
   .um-card-user-info {
@@ -1023,34 +1059,39 @@
   }
 
   /* Footer */
+  .um-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: #F8FAFC;
+    border-top: 1px solid #E2E8F0;
+  }
+
   .um-footer-notice {
-    font-size: 11px;
+    font-size: 10px;
     text-align: center;
+    color: #64748B;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 0;
   }
 
   /* Pagination */
   .um-pagination {
-    gap: 12px;
-  }
-
-  .um-pagination-info {
-    text-align: center;
-    font-size: 13px;
-    margin-bottom: 8px;
-  }
-
-  .um-pagination-controls {
     display: flex;
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
+    width: 100%;
   }
 
   .um-pagination-btn {
-    padding: 10px 20px;
-    font-size: 14px;
-    min-width: 80px;
     flex: 1;
-    max-width: 150px;
+    max-width: 120px;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 0;
   }
 
   /* Modals - Floating instead of full screen on mobile */
