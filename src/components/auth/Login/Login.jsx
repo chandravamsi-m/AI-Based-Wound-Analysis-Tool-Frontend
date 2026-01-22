@@ -65,9 +65,17 @@ function Login({ onLoginSuccess }) {
           localStorage.removeItem('rememberedEmail');
         }
 
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('isAuthenticated', 'true');
+        // Professional Session management
+        const storage = formData.rememberMe ? localStorage : sessionStorage;
+        const otherStorage = formData.rememberMe ? sessionStorage : localStorage;
+
+        // Store user data in the appropriate storage
+        storage.setItem('user', JSON.stringify(data.user));
+        storage.setItem('isAuthenticated', 'true');
+
+        // Clear the other storage to prevent conflicting states
+        otherStorage.removeItem('user');
+        otherStorage.removeItem('isAuthenticated');
 
         // Call success callback
         onLoginSuccess(data.user);
