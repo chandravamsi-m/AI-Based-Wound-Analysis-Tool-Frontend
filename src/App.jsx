@@ -20,13 +20,15 @@ function App() {
 
   // Check for existing authentication on mount
   useEffect(() => {
-    const authStatus = localStorage.getItem('isAuthenticated')
-    const userData = localStorage.getItem('user')
+    // Check both localStorage and sessionStorage
+    const storage = localStorage.getItem('isAuthenticated') === 'true' ? localStorage : sessionStorage;
+    const authStatus = storage.getItem('isAuthenticated');
+    const userData = storage.getItem('user');
 
     if (authStatus === 'true' && userData) {
-      setIsAuthenticated(true)
-      setCurrentUser(JSON.parse(userData))
-      setView('app')
+      setIsAuthenticated(true);
+      setCurrentUser(JSON.parse(userData));
+      setView('app');
     }
   }, [])
 
@@ -46,8 +48,12 @@ function App() {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated')
-    localStorage.removeItem('user')
+    // Clear both storages to ensure complete sign out
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('isAuthenticated');
+    sessionStorage.removeItem('user');
+
     setIsAuthenticated(false)
     setCurrentUser(null)
     setView('login')
