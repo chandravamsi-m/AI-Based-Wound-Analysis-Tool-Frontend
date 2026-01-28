@@ -3,6 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 import logo from '../../../assets/logo.svg';
 import lockIcon from '../../../assets/lock-icon.svg';
+import authService from '../../../services/authService';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
@@ -38,52 +39,24 @@ function Login({ onLoginSuccess }) {
     if (error) setError('');
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/login/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        }),
-      });
+      // Use authService for JWT-based login
+      const user = await authService.login(
+        formData.email,
+        formData.password,
+        formData.rememberMe
+      );
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Handle Remember Me logic
-        if (formData.rememberMe) {
-          localStorage.setItem('rememberedEmail', formData.email);
-        } else {
-          localStorage.removeItem('rememberedEmail');
-        }
-
-        // Professional Session management
-        const storage = formData.rememberMe ? localStorage : sessionStorage;
-        const otherStorage = formData.rememberMe ? sessionStorage : localStorage;
-
-        // Store user data in the appropriate storage
-        storage.setItem('user', JSON.stringify(data.user));
-        storage.setItem('isAuthenticated', 'true');
-
-        // Clear the other storage to prevent conflicting states
-        otherStorage.removeItem('user');
-        otherStorage.removeItem('isAuthenticated');
-
-        // Call success callback
-        onLoginSuccess(data.user);
-      } else {
-        setError(data.error || 'Login failed. Please try again.');
-      }
+      // Call success callback
+      onLoginSuccess(user);
     } catch (err) {
-      setError('Unable to connect to server. Please try again.');
+      setError(err.message || 'Unable to connect to server. Please try again.');
     } finally {
       setLoading(false);
     }

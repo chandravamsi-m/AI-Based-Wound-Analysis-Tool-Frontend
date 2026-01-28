@@ -6,9 +6,14 @@ import SplashScreen from './components/auth/SplashScreen/SplashScreen'
 import IntroScreens from './components/auth/IntroScreens/IntroScreens'
 import Login from './components/auth/Login/Login'
 import Dashboard from './components/admin/Dashboard/Dashboard'
+import DoctorDashboard from './components/doctor/DoctorDashboard/DoctorDashboard'
+import NurseDashboard from './components/nurse/NurseDashboard/NurseDashboard'
 import SystemLogs from './components/admin/SystemLogs/SystemLogs'
 import Storage from './components/admin/Storage/Storage'
 import Settings from './components/admin/Settings/Settings'
+import Alerts from './components/admin/Alerts/Alerts'
+import apiClient from './services/apiClient'
+import authService from './services/authService'
 import './App.css'
 
 function App() {
@@ -17,6 +22,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentUser, setCurrentUser] = useState(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [summary, setSummary] = useState(null)
 
   // Check for existing authentication on mount
   useEffect(() => {
@@ -32,6 +38,24 @@ function App() {
     }
   }, [])
 
+  // Shared Data Fetching for Dashboard and Sidebar Badge
+  useEffect(() => {
+    if (isAuthenticated && view === 'app') {
+      const fetchSummary = async () => {
+        try {
+          const response = await apiClient.get('/dashboard/summary/');
+          setSummary(response.data);
+        } catch (error) {
+          console.error("Error fetching summary:", error);
+        }
+      };
+
+      fetchSummary();
+      const interval = setInterval(fetchSummary, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, view]);
+
   useEffect(() => {
     if (view === 'splash') {
       const timer = setTimeout(() => {
@@ -45,15 +69,19 @@ function App() {
     setIsAuthenticated(true)
     setCurrentUser(user)
     setView('app')
+
+    // Set initial view based on user role
+    if (user.role === 'Admin') {
+      setActiveSubView('dashboard')
+    } else if (user.role === 'Doctor') {
+      setActiveSubView('doctor-dashboard')
+    } else if (user.role === 'Nurse') {
+      setActiveSubView('nurse-dashboard')
+    }
   }
 
-  const handleLogout = () => {
-    // Clear both storages to ensure complete sign out
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('user');
-    sessionStorage.removeItem('isAuthenticated');
-    sessionStorage.removeItem('user');
-
+  const handleLogout = async () => {
+    await authService.logout();
     setIsAuthenticated(false)
     setCurrentUser(null)
     setView('login')
@@ -70,7 +98,18 @@ function App() {
   const renderSubView = () => {
     switch (activeSubView) {
       case 'dashboard':
-        return <Dashboard onViewChange={setActiveSubView} />;
+        if (currentUser?.role === 'Admin') {
+          return <Dashboard onViewChange={setActiveSubView} summary={summary} />;
+        }
+        // Fall through or handle other roles if 'dashboard' is a generic entry point
+        // For now, assuming 'dashboard' is specifically for Admin.
+        // If a Doctor or Nurse somehow lands on 'dashboard', they won't see anything here.
+        // This might need further refinement based on UX.
+        return null; // Or a default message/component
+      case 'doctor-dashboard':
+        return <DoctorDashboard />;
+      case 'nurse-dashboard':
+        return <NurseDashboard />;
       case 'users':
         return <UserManagement />;
       case 'logs':
@@ -79,8 +118,18 @@ function App() {
         return <Storage />;
       case 'settings':
         return <Settings />;
+      case 'alerts':
+        return <Alerts />;
       default:
-        return <Dashboard onViewChange={setActiveSubView} />;
+        // This default case might need to be more robust, e.g., redirect to a role-specific default
+        if (currentUser?.role === 'Admin') {
+          return <Dashboard onViewChange={setActiveSubView} summary={summary} />;
+        } else if (currentUser?.role === 'Doctor') {
+          return <DoctorDashboard />;
+        } else if (currentUser?.role === 'Nurse') {
+          return <NurseDashboard />;
+        }
+        return null; // Or a generic "Access Denied" component
     }
   };
 
@@ -106,6 +155,7 @@ function App() {
         onClose={closeMobileMenu}
         currentView={activeSubView}
         onViewChange={setActiveSubView}
+        summary={summary}
       />
       <main className="main-content">
         {renderSubView()}

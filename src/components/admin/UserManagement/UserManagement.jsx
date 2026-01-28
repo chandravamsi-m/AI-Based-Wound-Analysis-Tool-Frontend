@@ -1,8 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Search, Filter, Trash2, Edit, ShieldCheck, UserPlus, Loader2, Eye, EyeOff } from 'lucide-react';
 import './UserManagement.css';
-
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+import apiClient from '../../../services/apiClient';
 
 function UserManagement() {
   const [staffData, setStaffData] = useState([]);
@@ -49,13 +48,11 @@ function UserManagement() {
   const fetchStaff = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/users/`);
-      if (!response.ok) throw new Error('Failed to fetch user data');
-      const data = await response.json();
-      setStaffData(data);
+      const response = await apiClient.get('/users/');
+      setStaffData(response.data);
       setError(null);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.detail || err.message);
     } finally {
       setLoading(false);
     }
@@ -71,23 +68,14 @@ function UserManagement() {
     };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/users/${id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
-      });
-
-      if (!response.ok) throw new Error('Failed to update status');
-
-      const updatedStaff = await response.json();
+      const response = await apiClient.patch(`/users/${id}/`, updatedData);
+      const updatedStaff = response.data;
 
       setStaffData(prevData =>
         prevData.map(staff => staff.id === id ? updatedStaff : staff)
       );
     } catch (err) {
-      alert(`Error updating status: ${err.message}`);
+      alert(`Error updating status: ${err.response?.data?.detail || err.message}`);
     }
   };
 
@@ -95,11 +83,7 @@ function UserManagement() {
     if (!userToDelete) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/users/${userToDelete.id}/`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) throw new Error('Failed to delete user');
+      await apiClient.delete(`/users/${userToDelete.id}/`);
 
       setStaffData(prevData => prevData.filter(user => user.id !== userToDelete.id));
       setShowDeleteModal(false);
@@ -111,7 +95,7 @@ function UserManagement() {
         setCurrentPage(currentPage - 1);
       }
     } catch (err) {
-      alert(`Error deleting user: ${err.message}`);
+      alert(`Error deleting user: ${err.response?.data?.detail || err.message}`);
     }
   };
 
@@ -233,11 +217,8 @@ function UserManagement() {
     }
 
     try {
-      const url = modalMode === 'add'
-        ? `${API_BASE_URL}/users/`
-        : `${API_BASE_URL}/users/${selectedUser.id}/`;
-
-      const method = modalMode === 'add' ? 'POST' : 'PUT';
+      const url = modalMode === 'add' ? '/users/' : `/users/${selectedUser.id}/`;
+      const method = modalMode === 'add' ? 'post' : 'put';
 
       // Prepare payload - exclude confirmPassword and only include password if provided
       const { confirmPassword, ...payload } = formData;
@@ -245,29 +226,8 @@ function UserManagement() {
         delete payload.password; // Don't send empty password on edit
       }
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        // Handle backend validation errors
-        if (errorData.password) {
-          setFormErrors({ password: errorData.password[0] });
-          return;
-        }
-        if (errorData.email) {
-          setFormErrors({ email: errorData.email[0] });
-          return;
-        }
-        throw new Error(`Failed to ${modalMode} user`);
-      }
-
-      const savedUser = await response.json();
+      const response = await apiClient[method](url, payload);
+      const savedUser = response.data;
 
       if (modalMode === 'add') {
         setStaffData(prevData => [...prevData, savedUser]);
@@ -279,7 +239,18 @@ function UserManagement() {
 
       handleModalClose();
     } catch (err) {
-      alert(`Error ${modalMode === 'add' ? 'adding' : 'updating'} user: ${err.message}`);
+      const errorData = err.response?.data;
+      if (errorData) {
+        if (errorData.password) {
+          setFormErrors({ password: errorData.password[0] });
+          return;
+        }
+        if (errorData.email) {
+          setFormErrors({ email: errorData.email[0] });
+          return;
+        }
+      }
+      alert(`Error ${modalMode === 'add' ? 'adding' : 'updating'} user: ${err.response?.data?.detail || err.message}`);
     }
   };
 
