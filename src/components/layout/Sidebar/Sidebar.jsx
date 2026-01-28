@@ -1,13 +1,18 @@
 import { LayoutDashboard, Users, FileText, HardDrive, Settings, Bell, LogOut } from 'lucide-react';
 import './Sidebar.css';
 
-function Sidebar({ onSignOut, user, isMobileOpen, onClose, currentView, onViewChange }) {
+function Sidebar({ onSignOut, user, isMobileOpen, onClose, currentView, onViewChange, summary }) {
   const menuItems = [
-    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { id: 'users', icon: Users, label: 'User Management' },
-    { id: 'logs', icon: FileText, label: 'System Logs' },
-    { id: 'storage', icon: HardDrive, label: 'Storage' },
-    // { id: 'settings', icon: Settings, label: 'Settings' },
+    {
+      id: user?.role === 'Admin' ? 'dashboard' : (user?.role === 'Doctor' ? 'doctor-dashboard' : 'nurse-dashboard'),
+      icon: LayoutDashboard,
+      label: 'Dashboard'
+    },
+    ...(user?.role === 'Admin' ? [
+      { id: 'users', icon: Users, label: 'User Management' },
+      { id: 'logs', icon: FileText, label: 'System Logs' },
+      { id: 'storage', icon: HardDrive, label: 'Storage' },
+    ] : []),
   ];
 
   const handleItemClick = (viewId) => {
@@ -52,9 +57,13 @@ function Sidebar({ onSignOut, user, isMobileOpen, onClose, currentView, onViewCh
         </nav>
 
         <div className="sidebar-middle">
-          <button className="sidebar-item sidebar-alerts">
+          <button
+            className={`sidebar-item sidebar-alerts ${currentView === 'alerts' ? 'sidebar-item-active' : ''}`}
+            onClick={() => handleItemClick('alerts')}
+          >
             <Bell size={20} />
             <span>Alerts</span>
+            {summary?.security_alerts > 0 && <span className="sidebar-badge">{summary.security_alerts}</span>}
           </button>
         </div>
 

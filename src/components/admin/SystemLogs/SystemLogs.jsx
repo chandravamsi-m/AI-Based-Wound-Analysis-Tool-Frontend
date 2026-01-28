@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Download, Calendar, Filter, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import './SystemLogs.css';
-
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+import apiClient from '../../../services/apiClient';
 
 const SeverityBadge = ({ severity }) => {
   const styles = {
@@ -55,19 +54,20 @@ const SystemLogs = () => {
 
   useEffect(() => {
     fetchLogs();
+    const interval = setInterval(fetchLogs, 30000); // Poll every 30 seconds
+    return () => clearInterval(interval);
   }, [searchTerm, severityFilter, currentPage]);
 
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      let url = `${API_BASE_URL}/logs/?`;
+      let url = '/logs/?';
       if (searchTerm) url += `search=${encodeURIComponent(searchTerm)}&`;
       if (severityFilter !== 'All Severities') url += `severity=${severityFilter}&`;
 
-      const response = await fetch(url);
-      const data = await response.json();
-      setLogs(data);
-      setTotalLogs(data.length);
+      const response = await apiClient.get(url);
+      setLogs(response.data);
+      setTotalLogs(response.data.length);
     } catch (error) {
       console.error("Error fetching logs:", error);
     } finally {

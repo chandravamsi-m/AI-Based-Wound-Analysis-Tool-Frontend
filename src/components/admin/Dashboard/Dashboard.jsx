@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Activity, Shield, HardDrive, FileText, Download, TrendingUp, MoreHorizontal, AlertTriangle, HeartPulse } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import apiClient from '../../../services/apiClient';
 import './Dashboard.css';
-
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
 const SeverityTag = ({ severity }) => {
   const styles = {
@@ -27,29 +26,35 @@ const SeverityTag = ({ severity }) => {
   );
 };
 
-const Dashboard = ({ onViewChange }) => {
-  const [summary, setSummary] = useState(null);
+const Dashboard = ({ onViewChange, summary: initialSummary }) => {
+  const [summary, setSummary] = useState(initialSummary);
   const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialSummary);
+
+  // Sync with prop summary
+  useEffect(() => {
+    if (initialSummary) {
+      setSummary(initialSummary);
+      setLoading(false);
+    }
+  }, [initialSummary]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [summaryRes, logsRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/dashboard/summary/`),
-          fetch(`${API_BASE_URL}/logs/`)
-        ]);
-        const summaryData = await summaryRes.json();
-        const logsData = await logsRes.json();
-        setSummary(summaryData);
-        setLogs(logsData.slice(0, 5));
+        const logsRes = await apiClient.get('/logs/');
+        setLogs(logsRes.data.slice(0, 5));
       } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchData();
+    const interval = setInterval(fetchData, 30000); // Poll every 30 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   const storageData = [
@@ -84,7 +89,7 @@ const Dashboard = ({ onViewChange }) => {
             </div>
             <div className="metric-trend positive">
               <TrendingUp size={14} />
-              <span>+12% stable</span>
+              <span>{summary?.user_trend || '+5% stable'}</span>
             </div>
           </div>
         </div>
@@ -112,11 +117,11 @@ const Dashboard = ({ onViewChange }) => {
           <div className="metric-content">
             <span className="metric-label">Security Alerts</span>
             <div className="metric-value-row">
-              <span className="metric-value">{summary?.security_alerts || '2'}</span>
+              <span className="metric-value">{summary?.security_alerts || '0'}</span>
             </div>
-            <div className="metric-trend critical">
+            <div className={`metric-trend ${summary?.security_status === 'Healthy' ? 'operational' : 'critical'}`}>
               <AlertTriangle size={14} />
-              <span>Action Required</span>
+              <span>{summary?.security_status || 'Action Required'}</span>
             </div>
           </div>
         </div>
@@ -209,17 +214,17 @@ const Dashboard = ({ onViewChange }) => {
               <div className="storage-item">
                 <div className="dot patient"></div>
                 <span className="label">Patient Records</span>
-                <span className="value">{summary?.storage_stats?.patient_records_size || '824 GB'}</span>
+                <span className="value">{summary?.storage_stats?.patient_records_size || '0 GB'}</span>
               </div>
               <div className="storage-item">
                 <div className="dot imaging"></div>
                 <span className="label">Imaging Data</span>
-                <span className="value">{summary?.storage_stats?.imaging_data_size || '1.2 TB'}</span>
+                <span className="value">{summary?.storage_stats?.imaging_data_size || '0 TB'}</span>
               </div>
               <div className="storage-item">
                 <div className="dot free"></div>
                 <span className="label">Free Space</span>
-                <span className="value">{summary?.storage_stats?.free_space || '650 GB'}</span>
+                <span className="value">{summary?.storage_stats?.free_space || '0 GB'}</span>
               </div>
             </div>
             <button className="manage-capacity-btn" onClick={() => onViewChange('storage')}>Manage Capacity</button>

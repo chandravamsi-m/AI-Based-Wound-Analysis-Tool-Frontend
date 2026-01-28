@@ -17,60 +17,43 @@ import {
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import './Storage.css';
+import apiClient from '../../../services/apiClient';
 
 const Storage = () => {
-  // Mock data matching the design
-  const totalCapacityData = [
-    { name: 'Used', value: 75, color: '#2D62A8' },
-    { name: 'Free', value: 25, color: '#F1F5F9' }
+  const [storageData, setStorageData] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
+  const fetchStorageData = async () => {
+    try {
+      const response = await apiClient.get('/storage/summary/');
+      setStorageData(response.data);
+    } catch (error) {
+      console.error("Error fetching storage data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchStorageData();
+    const interval = setInterval(fetchStorageData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) return <div className="storage-management-container">Loading Storage Stats...</div>;
+  if (!storageData) return <div className="storage-management-container">Error loading data</div>;
+
+  const totalCapacityPie = [
+    { name: 'Used', value: storageData.used_percentage, color: '#2D62A8' },
+    { name: 'Free', value: 100 - storageData.used_percentage, color: '#F1F5F9' }
   ];
 
-  const storageBreakdown = [
-    {
-      id: 1,
-      category: 'Patient Clinical Records',
-      description: 'Structured EHR Data',
-      icon: <FileText size={20} className="category-icon clinical" />,
-      size: '824.2 GB',
-      growth: '+2.4%',
-      lastBackup: 'Oct 26, 2023 • 04:00 AM',
-      status: 'SECURE',
-      statusType: 'secure'
-    },
-    {
-      id: 2,
-      category: 'Wound Imaging Data',
-      description: 'High-Res Clinical Photos',
-      icon: <ImageIcon size={20} className="category-icon imaging" />,
-      size: '1.2 TB',
-      growth: '+12.8%',
-      lastBackup: 'Oct 26, 2023 • 02:30 AM',
-      status: 'SECURE',
-      statusType: 'secure'
-    },
-    {
-      id: 3,
-      category: 'System Audit Logs',
-      description: 'Activity & Compliance Logs',
-      icon: <Terminal size={20} className="category-icon logs" />,
-      size: '48.5 GB',
-      growth: '+0.8%',
-      lastBackup: 'Oct 27, 2023 • 00:00 AM',
-      status: 'SECURE',
-      statusType: 'secure'
-    },
-    {
-      id: 4,
-      category: 'System Backups',
-      description: 'Configuration & Meta-data',
-      icon: <History size={20} className="category-icon backups" />,
-      size: '124.0 GB',
-      growth: '+1.2%',
-      lastBackup: 'Oct 26, 2023 • 22:00 PM',
-      status: 'PENDING VERIFY',
-      statusType: 'pending'
-    }
-  ];
+  const getIcon = (category) => {
+    if (category.includes('Clinical')) return <FileText size={20} className="category-icon clinical" />;
+    if (category.includes('Imaging')) return <ImageIcon size={20} className="category-icon imaging" />;
+    if (category.includes('Logs')) return <Terminal size={20} className="category-icon logs" />;
+    return <History size={20} className="category-icon backups" />;
+  };
 
   return (
     <div className="storage-management-container">
@@ -102,7 +85,7 @@ const Storage = () => {
           </div>
           <div className="capacity-content">
             <div className="capacity-info">
-              <div className="capacity-value">1.5 <span>TB / 2 TB</span></div>
+              <div className="capacity-value">{storageData.used_capacity} <span>TB / {storageData.total_capacity} TB</span></div>
               <div className="status-indicator">
                 <TrendingUp size={16} />
                 <span>Healthy Status</span>
@@ -112,7 +95,7 @@ const Storage = () => {
               <ResponsiveContainer width="100%" height={120}>
                 <PieChart>
                   <Pie
-                    data={totalCapacityData}
+                    data={totalCapacityPie}
                     cx="50%"
                     cy="50%"
                     innerRadius={35}
@@ -123,14 +106,14 @@ const Storage = () => {
                     startAngle={90}
                     endAngle={-270}
                   >
-                    {totalCapacityData.map((entry, index) => (
+                    {totalCapacityPie.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
               <div className="chart-overlay">
-                <span className="overlay-pct">75%</span>
+                <span className="overlay-pct">{storageData.used_percentage}%</span>
               </div>
             </div>
           </div>
@@ -143,13 +126,13 @@ const Storage = () => {
             <span>Database Usage</span>
           </div>
           <div className="usage-body">
-            <div className="usage-value">824.2 <span>GB</span></div>
+            <div className="usage-value">{storageData.database_usage_gb} <span>GB</span></div>
             <div className="progress-bar-container">
-              <div className="progress-bar db" style={{ width: '42%' }}></div>
+              <div className="progress-bar db" style={{ width: `${storageData.database_percentage}%` }}></div>
             </div>
             <div className="usage-footer">
               <span>Structured Patient Data</span>
-              <span>42% of total</span>
+              <span>{storageData.database_percentage}% of total</span>
             </div>
           </div>
         </div>
@@ -161,13 +144,13 @@ const Storage = () => {
             <span>File Storage</span>
           </div>
           <div className="usage-body">
-            <div className="usage-value">1,245.8 <span>GB</span></div>
+            <div className="usage-value">{storageData.file_storage_gb.toLocaleString()} <span>GB</span></div>
             <div className="progress-bar-container">
-              <div className="progress-bar files" style={{ width: '62%' }}></div>
+              <div className="progress-bar files" style={{ width: `${storageData.file_storage_percentage}%` }}></div>
             </div>
             <div className="usage-footer">
               <span>Wound Images & Scan Docs</span>
-              <span>62% of total</span>
+              <span>{storageData.file_storage_percentage}% of total</span>
             </div>
           </div>
         </div>
@@ -192,12 +175,12 @@ const Storage = () => {
               </tr>
             </thead>
             <tbody>
-              {storageBreakdown.map((item) => (
+              {storageData.breakdown.map((item) => (
                 <tr key={item.id}>
                   <td>
                     <div className="category-cell">
                       <div className={`icon-wrapper ${item.statusType}`}>
-                        {item.icon}
+                        {getIcon(item.category)}
                       </div>
                       <div className="category-info">
                         <div className="category-name">{item.category}</div>
@@ -220,12 +203,12 @@ const Storage = () => {
         </div>
 
         <div className="breakdown-mobile-list">
-          {storageBreakdown.map((item) => (
+          {storageData.breakdown.map((item) => (
             <div key={item.id} className="breakdown-mobile-card">
               <div className="mobile-card-header">
                 <div className="mobile-category-info">
                   <div className={`mobile-icon-wrapper ${item.statusType}`}>
-                    {item.icon}
+                    {getIcon(item.category)}
                   </div>
                   <div>
                     <div className="mobile-category-name">{item.category}</div>
