@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, FileText, HardDrive, Settings, Bell, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Activity, HardDrive, Settings, Bell, LogOut } from 'lucide-react';
 import './Sidebar.css';
 
 function Sidebar({ onSignOut, user, isMobileOpen, onClose, currentView, onViewChange, summary }) {
@@ -12,6 +12,11 @@ function Sidebar({ onSignOut, user, isMobileOpen, onClose, currentView, onViewCh
       { id: 'users', icon: Users, label: 'User Management' },
       { id: 'logs', icon: FileText, label: 'System Logs' },
       { id: 'storage', icon: HardDrive, label: 'Storage' },
+    ] : []),
+    ...(user?.role === 'Doctor' ? [
+      { id: 'patients', icon: Users, label: 'Patients' },
+      { id: 'assessments', icon: Activity, label: 'Assessments' },
+      { id: 'reports', icon: FileText, label: 'Reports' },
     ] : []),
   ];
 
