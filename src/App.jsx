@@ -7,6 +7,9 @@ import IntroScreens from './components/auth/IntroScreens/IntroScreens'
 import Login from './components/auth/Login/Login'
 import Dashboard from './components/admin/Dashboard/Dashboard'
 import DoctorDashboard from './components/doctor/DoctorDashboard/DoctorDashboard'
+import Patients from './components/doctor/Patients/Patients'
+import Assessments from './components/doctor/Assessments/Assessments'
+import Reports from './components/doctor/Reports/Reports'
 import NurseDashboard from './components/nurse/NurseDashboard/NurseDashboard'
 import SystemLogs from './components/admin/SystemLogs/SystemLogs'
 import Storage from './components/admin/Storage/Storage'
@@ -108,6 +111,12 @@ function App() {
         return null; // Or a default message/component
       case 'doctor-dashboard':
         return <DoctorDashboard />;
+      case 'patients':
+        return <Patients />;
+      case 'assessments':
+        return <Assessments />;
+      case 'reports':
+        return <Reports />;
       case 'nurse-dashboard':
         return <NurseDashboard />;
       case 'users':
