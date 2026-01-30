@@ -18,6 +18,10 @@ function Sidebar({ onSignOut, user, isMobileOpen, onClose, currentView, onViewCh
       { id: 'assessments', icon: Activity, label: 'Assessments' },
       { id: 'reports', icon: FileText, label: 'Reports' },
     ] : []),
+    ...(user?.role === 'Nurse' ? [
+      { id: 'patients', icon: Users, label: 'My Patients' },
+      { id: 'assessments', icon: Activity, label: 'Assessments' },
+    ] : []),
   ];
 
   const handleItemClick = (viewId) => {

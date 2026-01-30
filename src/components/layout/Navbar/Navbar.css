@@ -111,7 +111,7 @@
   position: relative;
 }
 
-/* .notification-badge {
+.sidebar-badge-dot {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -119,8 +119,8 @@
   height: 8px;
   background: #EF4444;
   border-radius: 50%;
-  border: 2px solid white;
-} */
+  border: 1.5px solid white;
+}
 
 /* User */
 .navbar-user {

@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react'
 import Navbar from './components/layout/Navbar/Navbar'
 import Sidebar from './components/layout/Sidebar/Sidebar'
-import UserManagement from './components/admin/UserManagement/UserManagement'
-import SplashScreen from './components/auth/SplashScreen/SplashScreen'
-import IntroScreens from './components/auth/IntroScreens/IntroScreens'
-import Login from './components/auth/Login/Login'
-import Dashboard from './components/admin/Dashboard/Dashboard'
-import DoctorDashboard from './components/doctor/DoctorDashboard/DoctorDashboard'
-import Patients from './components/doctor/Patients/Patients'
-import Assessments from './components/doctor/Assessments/Assessments'
-import Reports from './components/doctor/Reports/Reports'
-import NurseDashboard from './components/nurse/NurseDashboard/NurseDashboard'
-import SystemLogs from './components/admin/SystemLogs/SystemLogs'
-import Storage from './components/admin/Storage/Storage'
-import Settings from './components/admin/Settings/Settings'
-import Alerts from './components/admin/Alerts/Alerts'
+import UserManagement from './pages/admin/UserManagement/UserManagement'
+import SplashScreen from './pages/auth/SplashScreen/SplashScreen'
+import IntroScreens from './pages/auth/IntroScreens/IntroScreens'
+import Login from './pages/auth/Login/Login'
+import Dashboard from './pages/admin/Dashboard/Dashboard'
+import DoctorDashboard from './pages/doctor/DoctorDashboard/DoctorDashboard'
+import Patients from './pages/common/Patients/PatientsList'
+import AddPatient from './pages/common/Patients/AddPatient'
+import Assessments from './pages/common/Assessments/AssessmentHistory'
+import Reports from './pages/doctor/Reports/Reports'
+import NurseDashboard from './pages/nurse/NurseDashboard/NurseDashboard'
+import SystemLogs from './pages/admin/SystemLogs/SystemLogs'
+import Storage from './pages/admin/Storage/Storage'
+import Settings from './pages/admin/Settings/Settings'
+import Alerts from './pages/admin/Alerts/Alerts'
 import apiClient from './services/apiClient'
 import authService from './services/authService'
 import './App.css'
@@ -33,13 +34,32 @@ function App() {
     const storage = localStorage.getItem('isAuthenticated') === 'true' ? localStorage : sessionStorage;
     const authStatus = storage.getItem('isAuthenticated');
     const userData = storage.getItem('user');
+    const savedSubView = storage.getItem('activeSubView');
 
     if (authStatus === 'true' && userData) {
+      const user = JSON.parse(userData);
       setIsAuthenticated(true);
-      setCurrentUser(JSON.parse(userData));
+      setCurrentUser(user);
       setView('app');
+
+      if (savedSubView) {
+        setActiveSubView(savedSubView);
+      } else {
+        // Set initial view based on user role if no saved view
+        if (user.role === 'Admin') setActiveSubView('dashboard');
+        else if (user.role === 'Doctor') setActiveSubView('doctor-dashboard');
+        else if (user.role === 'Nurse') setActiveSubView('nurse-dashboard');
+      }
     }
   }, [])
+
+  // Persist activeSubView whenever it changes
+  useEffect(() => {
+    if (isAuthenticated && activeSubView) {
+      const storage = localStorage.getItem('isAuthenticated') === 'true' ? localStorage : sessionStorage;
+      storage.setItem('activeSubView', activeSubView);
+    }
+  }, [activeSubView, isAuthenticated]);
 
   // Shared Data Fetching for Dashboard and Sidebar Badge
   useEffect(() => {
@@ -81,9 +101,16 @@ function App() {
     } else if (user.role === 'Nurse') {
       setActiveSubView('nurse-dashboard')
     }
+
+    // Explicitly store the initial role-based view
+    const storage = localStorage.getItem('isAuthenticated') === 'true' ? localStorage : sessionStorage;
+    storage.setItem('activeSubView', user.role === 'Admin' ? 'dashboard' : (user.role === 'Doctor' ? 'doctor-dashboard' : 'nurse-dashboard'));
   }
 
   const handleLogout = async () => {
+    localStorage.removeItem('activeSubView');
+    sessionStorage.removeItem('activeSubView');
+    sessionStorage.removeItem('clinical_registry_acknowledged');
     await authService.logout();
     setIsAuthenticated(false)
     setCurrentUser(null)
@@ -112,13 +139,15 @@ function App() {
       case 'doctor-dashboard':
         return <DoctorDashboard />;
       case 'patients':
-        return <Patients />;
+        return <Patients onAddPatient={() => setActiveSubView('add-patient')} />;
+      case 'add-patient':
+        return <AddPatient onBack={() => setActiveSubView('patients')} />;
       case 'assessments':
         return <Assessments />;
       case 'reports':
         return <Reports />;
       case 'nurse-dashboard':
-        return <NurseDashboard />;
+        return <NurseDashboard onNavigate={setActiveSubView} />;
       case 'users':
         return <UserManagement />;
       case 'logs':

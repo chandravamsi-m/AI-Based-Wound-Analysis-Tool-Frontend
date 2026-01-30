@@ -15,7 +15,7 @@ function Navbar({ user, onMenuToggle }) {
           <Search size={16} className="navbar-search-icon" />
           <input
             type="text"
-            placeholder="Search patient MRN..."
+            placeholder="Search MRN or Name..."
             className="navbar-search-input"
           />
         </div>
@@ -27,12 +27,14 @@ function Navbar({ user, onMenuToggle }) {
         </button>
         <button className="navbar-icon-btn navbar-notification" title="Notifications">
           <Bell size={20} />
-          {/* <span className="notification-badge"></span> */}
+          <span className="sidebar-badge-dot"></span>
         </button>
         <div className="navbar-user">
           <div className="navbar-user-info">
             <div className="navbar-user-name">{user?.name || 'Guest User'}</div>
-            <div className="navbar-user-role">{user?.role || 'Guest'}</div>
+            <div className="navbar-user-role">
+              {user?.role === 'Nurse' ? 'Nursing Staff' : (user?.role || 'Guest')}
+            </div>
           </div>
           <div className="navbar-user-avatar">
             <User size={20} />

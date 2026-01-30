@@ -1,0 +1,161 @@
+.my-patients-list {
+  background: white;
+  border: 0.8px solid #E2E8F0;
+  border-radius: 14px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.patients-list-header {
+  background: #F8FAFC;
+  border-bottom: 0.8px solid #E2E8F0;
+  padding: 0 20px;
+  height: 56.8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.patients-list-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #45556C;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 16px;
+}
+
+.patients-list-link {
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  height: 24px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #2d62a8;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.patients-list-link:hover {
+  opacity: 0.8;
+}
+
+.patients-list-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.patient-item {
+  border-bottom: 0.8px solid #F1F5F9;
+  padding: 0 20px;
+  height: 67.8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.patient-item:last-child {
+  border-bottom: none;
+  height: 67px;
+}
+
+.patient-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.patient-avatar {
+  width: 32px;
+  height: 32px;
+  background: #F1F5F9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.patient-avatar span {
+  font-size: 10px;
+  font-weight: 700;
+  color: #62748E;
+  line-height: 15px;
+}
+
+.patient-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.patient-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0F172B;
+  margin: 0;
+  line-height: 20px;
+}
+
+.patient-room {
+  font-size: 10px;
+  font-weight: 500;
+  color: #62748E;
+  margin: 0;
+  line-height: 15px;
+  letter-spacing: 0.25px;
+}
+
+.patient-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.patient-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.patient-status-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: #62748E;
+  line-height: 15px;
+  text-transform: uppercase;
+}
+
+
+.patient-item-message {
+  padding: 20px;
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.patient-item-message.error {
+  color: #ef4444;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.retry-btn {
+  padding: 4px 12px;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  background: transparent;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.retry-btn:hover {
+  background: #fef2f2;
+}
