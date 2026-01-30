@@ -1,0 +1,35 @@
+.vitals-modal {
+    width: 600px;
+}
+
+.vitals-header {
+    background-color: var(--primary-blue-light) !important;
+    border-bottom: 2px solid var(--primary-blue) !important;
+}
+
+.vitals-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vitals-icon-header {
+    color: var(--primary-blue);
+}
+
+.vitals-modal .form-grid {
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 12px;
+}
+
+/* Ensure the notes area takes enough vertical space */
+.vitals-modal textarea {
+    min-height: 120px;
+    resize: none;
+}
+
+@media (max-width: 640px) {
+    .vitals-modal .form-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,420 @@
+.assessment-history-page {
+  padding: 24px;
+  background: #F7F9FB;
+  min-height: calc(100vh - 72px);
+}
+
+.assessment-history-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.assessment-history-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.assessment-history-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0F172B;
+  line-height: 32px;
+  margin: 0;
+}
+
+.assessment-history-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: #62748E;
+  line-height: 24px;
+  margin: 0;
+}
+
+.btn-new-assessment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  height: 40px;
+  background: #2d62a8;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-new-assessment:hover {
+  background: #1d4ed8;
+}
+
+.assessment-filters {
+  background: white;
+  border: 0.8px solid #F1F5F9;
+  border-radius: 14px;
+  padding: 16.8px;
+  margin-bottom: 24px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.assessment-search-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 472.988px;
+}
+
+.assessment-search-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 16px 0 40px;
+  border: 0.8px solid #E2E8F0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: rgba(15, 23, 43, 0.5);
+  background: white;
+}
+
+.assessment-search-input::placeholder {
+  color: rgba(15, 23, 43, 0.5);
+}
+
+.assessment-search-input:focus {
+  outline: none;
+  border-color: #2d62a8;
+}
+
+.filter-dropdown {
+  height: 40px;
+  padding: 0 16px;
+  border: 0.8px solid #E2E8F0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #0F172B;
+  background: white;
+  cursor: pointer;
+  min-width: 140px;
+}
+
+.filter-dropdown:focus {
+  outline: none;
+  border-color: #2d62a8;
+}
+
+.btn-date-range,
+.btn-more-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  height: 40px;
+  background: white;
+  border: 0.8px solid #D1D5DC;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #364153;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-date-range:hover,
+.btn-more-filters:hover {
+  background: #F8FAFC;
+}
+
+.assessment-table-container {
+  background: white;
+  border: 0.8px solid #F1F5F9;
+  border-radius: 14px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.assessment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.assessment-table thead {
+  background: #F8FAFC;
+  border-bottom: 0.8px solid #E2E8F0;
+}
+
+.assessment-table th {
+  padding: 11.8px 24px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+  color: #62748E;
+  line-height: 20px;
+}
+
+.assessment-table th.text-right {
+  text-align: right;
+}
+
+.assessment-table tbody tr {
+  border-bottom: 0.8px solid #F1F5F9;
+}
+
+.assessment-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.assessment-table td {
+  padding: 24px;
+  vertical-align: top;
+}
+
+.date-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.date-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.date-with-icon svg {
+  color: #62748E;
+  flex-shrink: 0;
+}
+
+.date-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0F172B;
+  line-height: 20px;
+}
+
+.time-text {
+  font-size: 12px;
+  font-weight: 400;
+  color: #62748E;
+  line-height: 16px;
+  margin-left: 24px;
+}
+
+.patient-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.patient-cell .patient-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0F172B;
+  line-height: 20px;
+  margin-bottom: 0;
+}
+
+.patient-cell .patient-mrn {
+  font-size: 12px;
+  font-weight: 400;
+  color: #62748E;
+  line-height: 16px;
+}
+
+.wound-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.wound-location {
+  font-size: 14px;
+  font-weight: 400;
+  color: #0F172B;
+  line-height: 20px;
+  margin-bottom: 0;
+}
+
+.wound-type {
+  font-size: 12px;
+  font-weight: 400;
+  color: #62748E;
+  line-height: 16px;
+}
+
+.dimensions-cell {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.dimension-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dimension-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: #90A1B9;
+  line-height: 16px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.dimension-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0F172B;
+  line-height: 20px;
+}
+
+.tissue-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tissue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tissue-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: #62748E;
+  line-height: 14.286px;
+}
+
+.tissue-percentage {
+  font-size: 10px;
+  font-weight: 500;
+  color: #62748E;
+  line-height: 14.286px;
+}
+
+.tissue-bar {
+  display: flex;
+  height: 6px;
+  background: #F1F5F9;
+  border-radius: 9999px;
+  overflow: hidden;
+  width: 128px;
+}
+
+.tissue-bar-segment {
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.tissue-bar-red {
+  background: #E55039;
+}
+
+.tissue-bar-yellow {
+  background: #F6B93B;
+}
+
+.tissue-bar-dark {
+  background: #1D293D;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.btn-view-assessment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #364153;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-view-assessment:hover {
+  background: #F8FAFC;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.assessment-pagination {
+  background: white;
+  border: 0.8px solid #E2E8F0;
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  padding: 0.8px 24px;
+  height: 64.8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #62748E;
+  line-height: 20px;
+}
+
+.pagination-number {
+  font-weight: 500;
+  color: #0F172B;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-pagination {
+  padding: 0.8px 12.8px;
+  height: 32px;
+  background: white;
+  border: 0.8px solid #D1D5DC;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #364153;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.5;
+}
+
+.btn-pagination:disabled {
+  cursor: not-allowed;
+}
+
+.btn-pagination:not(:disabled):hover {
+  background: #F8FAFC;
+  opacity: 1;
+}
+

@@ -1,0 +1,262 @@
+.patient-details-modal {
+    width: 750px;
+    max-width: 95%;
+}
+
+.patient-details-header {
+    background-color: var(--primary-blue-light) !important;
+    border-bottom: 2px solid var(--primary-blue) !important;
+}
+
+.header-patient-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.patient-avatar-large {
+    width: 48px;
+    height: 48px;
+    background-color: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    box-shadow: 0 4px 6px -1px rgba(45, 98, 168, 0.2);
+}
+
+.patient-meta-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.details-content {
+    background-color: #fcfcfd;
+    gap: 32px;
+}
+
+.details-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.clinical-notes-card {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.clinical-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-main);
+    margin-top: 8px;
+}
+
+/* History Table */
+.vitals-history-table-wrapper {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.vitals-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.vitals-history-table th {
+    background: #f8fafc;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-size: 12px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.vitals-history-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.record-time {
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.record-metric {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.record-metric small {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.val-hr { color: #dc2626; }
+.val-spo2 { color: #2563eb; }
+.val-rr { color: #d97706; }
+
+.record-nurse {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.empty-history {
+    padding: 40px;
+    text-align: center;
+    background: #f8fafc;
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+@media (max-width: 640px) {
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .vitals-history-table th:nth-child(4),
+    .vitals-history-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+/* Wound Gallery */
+.wound-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.location-heading {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 12px;
+    padding-left: 4px;
+}
+
+.assessment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.assessment-mini-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+}
+
+.assessment-mini-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.assessment-img-wrapper {
+    position: relative;
+    height: 120px;
+    background: #f1f5f9;
+}
+
+.assessment-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.stage-overlay {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgba(15, 23, 42, 0.8);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+}
+
+.assessment-info {
+    padding: 10px;
+    background: white;
+}
+
+.assessment-date {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.assessment-metrics {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-main);
+}
