@@ -297,11 +297,28 @@
     }
 
     .patient-meta-subtitle {
-        font-size: 11px;
+        font-size: 10px;
     }
 
     .info-grid-premium {
         grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .details-section {
+        gap: 12px;
+    }
+
+    .section-title {
+        font-size: 12px;
+    }
+
+    .assessment-grid {
+        grid-template-columns: 1fr; /* Single column for images on very small devices */
+    }
+
+    .assessment-img-wrapper {
+        height: 180px; /* Larger image view when solo */
     }
 }
 

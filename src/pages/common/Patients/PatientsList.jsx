@@ -135,8 +135,8 @@ function PatientsList({ onAddPatient }) {
                 <th>Patient Name</th>
                 <th>MRN</th>
                 <th>Risk Level</th>
-                <th>Last Visit</th>
-                <th>Active Wounds</th>
+                <th className="hide-on-mobile">Last Visit</th>
+                <th className="hide-on-mobile">Active Wounds</th>
                 <th className="text-right">Actions</th>
               </tr>
             </thead>
@@ -187,10 +187,10 @@ function PatientsList({ onAddPatient }) {
                         {patient.riskLevel}
                       </span>
                     </td>
-                    <td>
+                    <td className="hide-on-mobile">
                       <span className="patient-date">{patient.lastVisit}</span>
                     </td>
-                    <td>
+                    <td className="hide-on-mobile">
                       <span className="patient-wounds">{patient.activeWounds}</span>
                     </td>
                     <td className="text-right">
