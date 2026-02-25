@@ -180,21 +180,32 @@
 }
 
 .dashboard-logs-table td {
-  padding: 16px;
+  padding: 14px 16px;
   font-size: 14px;
   color: #334155;
   border-bottom: 1px solid #F1F5F9;
+  vertical-align: middle;
 }
 
 .time-cell { 
   color: #94A3B8; 
   font-family: 'Inter', sans-serif;
   font-size: 13px;
+  white-space: nowrap;
+  line-height: 1.4;
 }
 
 .user-cell { 
   font-weight: 600;
   color: #1E293B;
+  font-size: 13px;
+}
+
+.action-cell {
+  max-width: 350px;
+  line-height: 1.5;
+  font-size: 13px;
+  color: #475569;
 }
 
 /* Mobile Logs Cards (Hidden by default) */

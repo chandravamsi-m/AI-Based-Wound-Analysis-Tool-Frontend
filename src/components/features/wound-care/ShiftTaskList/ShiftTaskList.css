@@ -48,6 +48,22 @@
   line-height: 15px;
 }
 
+.task-item.interactive {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.task-item.interactive:hover {
+  background: #f0f7ff;
+  border-left: 3px solid #3b82f6;
+  padding-left: 13px; /* Offset for border */
+}
+
+.task-item.interactive:active {
+  background: #e0f2fe;
+}
+
 .task-tabs {
   display: flex;
   padding: 0 16px;

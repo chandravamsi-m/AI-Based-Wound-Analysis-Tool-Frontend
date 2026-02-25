@@ -1,6 +1,7 @@
 .patient-details-modal {
-    width: 750px;
-    max-width: 95%;
+    width: 95%;
+    max-width: 850px;
+    height: 90vh;
 }
 
 .patient-details-header {
@@ -45,56 +46,122 @@
     gap: 16px;
 }
 
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
 .section-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 800;
+    color: #1e293b;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-color);
+    gap: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.info-label {
+.clinical-badge-secondary {
+    background: #f0fdf4;
+    color: #16a34a;
     font-size: 11px;
     font-weight: 700;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid #dcfce7;
 }
 
-.info-value {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-main);
-}
-
-.clinical-notes-card {
+/* Premium Info Grid */
+.info-grid-premium {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
     background: white;
-    padding: 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
 }
 
-.clinical-text {
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--text-main);
-    margin-top: 8px;
+.info-item-premium {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-label-premium {
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.08em;
+}
+
+.info-value-premium {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+/* Clinical Diagnosis Card */
+.clinical-diagnosis-card {
+    display: flex;
+    gap: 20px;
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.diagnosis-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    background: white;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2f65ac;
+    flex-shrink: 0;
+}
+
+.diagnosis-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.diagnosis-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+}
+
+.diagnosis-text {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #1e293b;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Fix for footer height/visibility */
+.patient-details-modal .modal-footer {
+    margin: 0 !important;
+    position: relative !important;
+    bottom: 0 !important;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    padding: 20px 24px;
+    z-index: 20;
+}
+
+.patient-details-modal .details-content {
+    padding-bottom: 40px; /* Extra space before footer */
 }
 
 /* History Table */
@@ -167,14 +234,74 @@
     font-size: 14px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .info-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
     }
     
-    .vitals-history-table th:nth-child(4),
-    .vitals-history-table td:nth-child(4) {
-        display: none;
+    .modal-header {
+        padding: 16px;
+    }
+
+    .details-content {
+        padding: 16px;
+        gap: 20px;
+    }
+
+    .vitals-history-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .info-grid-premium {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .clinical-diagnosis-card {
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .vitals-history-table {
+        min-width: 500px; /* Ensure table doesn't collapse too much */
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+        padding: 12px 16px;
+    }
+
+    .modal-footer button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-patient-info {
+        gap: 12px;
+    }
+
+    .patient-avatar-large {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .modal-title {
+        font-size: 16px;
+    }
+
+    .patient-meta-subtitle {
+        font-size: 11px;
+    }
+
+    .info-grid-premium {
+        grid-template-columns: 1fr;
     }
 }
 

@@ -3,9 +3,9 @@ import { X, Activity, Heart, Wind, Droplets, ClipboardList } from 'lucide-react'
 import apiClient from '../../../../services/apiClient';
 import './VitalsModal.css';
 
-function VitalsModal({ onClose, onSuccess }) {
+function VitalsModal({ onClose, onSuccess, preSelectedPatientId, taskId }) {
     const [patients, setPatients] = useState([]);
-    const [selectedPatientId, setSelectedPatientId] = useState('');
+    const [selectedPatientId, setSelectedPatientId] = useState(preSelectedPatientId || '');
     const [heartRate, setHeartRate] = useState('');
     const [respiratoryRate, setRespiratoryRate] = useState('');
     const [oxygenSaturation, setOxygenSaturation] = useState('');
@@ -21,7 +21,7 @@ function VitalsModal({ onClose, onSuccess }) {
         try {
             const response = await apiClient.get('/clinical/patients/'); // Only assigned patients
             setPatients(response.data);
-            if (response.data.length > 0) {
+            if (!preSelectedPatientId && response.data.length > 0) {
                 setSelectedPatientId(response.data[0].id);
             }
         } catch (err) {
@@ -45,6 +45,16 @@ function VitalsModal({ onClose, onSuccess }) {
 
         try {
             await apiClient.post('/clinical/nurse/clinical/record-vitals/', data);
+
+            // Auto-complete task if record was opened via a task
+            if (taskId) {
+                try {
+                    await apiClient.post(`/clinical/nurse/tasks/${taskId}/complete/`);
+                } catch (taskErr) {
+                    console.error('Task auto-completion failed:', taskErr);
+                }
+            }
+
             onSuccess();
             onClose();
         } catch (err) {

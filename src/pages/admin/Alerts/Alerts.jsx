@@ -16,7 +16,7 @@ import {
 import './Alerts.css';
 import apiClient from '../../../services/apiClient';
 
-const Alerts = () => {
+const Alerts = ({ onAlertDismissed }) => {
   const [alerts, setAlerts] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,24 +42,29 @@ const Alerts = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
   }, []);
 
   const handleDismiss = async (id) => {
     try {
       await apiClient.post(`/clinical/alerts/${id}/dismiss/`);
       setAlerts(alerts.filter(a => a.id !== id));
+      if (onAlertDismissed) {
+        onAlertDismissed();
+      }
     } catch (error) {
       console.error("Error dismissing alert:", error);
     }
   };
 
   const filteredAlerts = alerts.filter(alert => {
+    const pName = alert.patient_name || '';
+    const aType = alert.alert_type || '';
+    const severity = alert.severity || '';
+
     const matchesSearch =
-      alert.patient_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      alert.alert_type.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSeverity = severityFilter === 'All Severities' || alert.severity === severityFilter;
+      pName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      aType.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSeverity = severityFilter === 'All Severities' || severity === severityFilter;
     return matchesSearch && matchesSeverity;
   });
 
@@ -84,7 +89,7 @@ const Alerts = () => {
           <p>Review and manage clinical priority alerts and system notifications.</p>
         </div>
         <div className="header-actions">
-          <button className="new-assessment-btn"><span>+ New Assessment</span></button>
+          {/* <button className="new-assessment-btn"><span>+ New Assessment</span></button> */}
         </div>
       </div>
 

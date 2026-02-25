@@ -51,10 +51,8 @@ const Dashboard = ({ onViewChange, summary: initialSummary }) => {
       }
     };
 
+    // Fetch logs ONCE on mount — no polling (each call reads 100 docs from Firestore)
     fetchData();
-    const interval = setInterval(fetchData, 30000); // Poll every 30 seconds
-
-    return () => clearInterval(interval);
   }, []);
 
   const storageData = [
@@ -71,10 +69,10 @@ const Dashboard = ({ onViewChange, summary: initialSummary }) => {
           <h1>System Administration</h1>
           <p>Manage users, monitor system health, and oversee clinical data storage.</p>
         </div>
-        <button className="export-report-btn">
+        {/* <button className="export-report-btn">
           <Download size={18} />
           <span>Export Report</span>
-        </button>
+        </button> */}
       </div>
 
       <div className="dashboard-metrics-grid">
@@ -149,7 +147,13 @@ const Dashboard = ({ onViewChange, summary: initialSummary }) => {
               <tbody>
                 {logs.map((log) => (
                   <tr key={log.id}>
-                    <td className="time-cell">{new Date(log.timestamp).toLocaleString()}</td>
+                    <td className="time-cell">
+                      {new Date(log.timestamp).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                      <br />
+                      <span style={{ fontSize: '11px', opacity: 0.8 }}>
+                        {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </td>
                     <td className="user-cell">{log.user_name}</td>
                     <td className="action-cell">{log.action}</td>
                     <td><SeverityTag severity={log.severity} /></td>
@@ -219,12 +223,12 @@ const Dashboard = ({ onViewChange, summary: initialSummary }) => {
               <div className="storage-item">
                 <div className="dot imaging"></div>
                 <span className="label">Imaging Data</span>
-                <span className="value">{summary?.storage_stats?.imaging_data_size || '0 TB'}</span>
+                <span className="value">{summary?.storage_stats?.imaging_data_size || '0 MB'}</span>
               </div>
               <div className="storage-item">
                 <div className="dot free"></div>
                 <span className="label">Free Space</span>
-                <span className="value">{summary?.storage_stats?.free_space || '0 GB'}</span>
+                <span className="value">{summary?.storage_stats?.free_space || '1 GB'}</span>
               </div>
             </div>
             <button className="manage-capacity-btn" onClick={() => onViewChange('storage')}>Manage Capacity</button>

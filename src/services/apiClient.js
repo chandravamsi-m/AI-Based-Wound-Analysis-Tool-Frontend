@@ -6,7 +6,14 @@
 import axios from 'axios';
 import authService from './authService';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+let VITE_API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+if (VITE_API_URL.endsWith('/')) {
+  VITE_API_URL = VITE_API_URL.slice(0, -1);
+}
+if (!VITE_API_URL.endsWith('/api')) {
+  VITE_API_URL += '/api';
+}
+const API_BASE_URL = VITE_API_URL;
 
 // Create axios instance
 const apiClient = axios.create({

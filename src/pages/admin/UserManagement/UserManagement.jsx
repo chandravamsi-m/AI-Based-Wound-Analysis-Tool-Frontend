@@ -21,17 +21,18 @@ function UserManagement() {
     password: '',
     confirmPassword: '',
     role: 'Doctor',
-    status: 'ACTIVE'
+    status: 'ACTIVE',
+    isActive: true
   });
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const itemsPerPage = 5;
 
-  // Fetch data from API
+  // Fetch data from API based on role filter
   useEffect(() => {
-    fetchStaff();
-  }, []);
+    fetchStaff(roleFilter);
+  }, [roleFilter]);
 
   // Helper function to get initials from name (3 letters as per design)
   const getInitials = (name) => {
@@ -45,10 +46,17 @@ function UserManagement() {
     return name.substring(0, 3).toUpperCase();
   };
 
-  const fetchStaff = async () => {
+  const fetchStaff = async (role) => {
     setLoading(true);
     try {
-      const response = await apiClient.get('/users/');
+      // Use backend role filtering and a reasonable limit
+      const queryRole = role === 'All Roles' ? '' : role;
+      const response = await apiClient.get('/users/', {
+        params: {
+          role: queryRole,
+          limit: 50 // Healthy limit for management view, but much less than infinity
+        }
+      });
       setStaffData(response.data);
       setError(null);
     } catch (err) {
@@ -64,7 +72,7 @@ function UserManagement() {
 
     const updatedData = {
       isActive: !staffMember.isActive,
-      status: !staffMember.isActive ? 'ACTIVE' : 'DISABLED'
+      status: !staffMember.isActive ? 'ACTIVE' : 'INACTIVE'
     };
 
     try {
@@ -75,7 +83,8 @@ function UserManagement() {
         prevData.map(staff => staff.id === id ? updatedStaff : staff)
       );
     } catch (err) {
-      alert(`Error updating status: ${err.response?.data?.detail || err.message}`);
+      const errorMsg = err.response?.data?.detail || err.response?.data?.error || err.message;
+      alert(`User Management: ${errorMsg}`);
     }
   };
 
@@ -114,7 +123,8 @@ function UserManagement() {
       password: '',
       confirmPassword: '',
       role: 'Doctor',
-      status: 'ACTIVE'
+      status: 'ACTIVE',
+      isActive: true
     });
     setFormErrors({});
     setShowUserModal(true);
@@ -129,7 +139,8 @@ function UserManagement() {
       password: '',  // Don't prefill password for security
       confirmPassword: '',
       role: user.role,
-      status: user.status
+      status: user.status,
+      isActive: user.isActive
     });
     setFormErrors({});
     setShowUserModal(true);
@@ -144,7 +155,8 @@ function UserManagement() {
       password: '',
       confirmPassword: '',
       role: 'Doctor',
-      status: 'ACTIVE'
+      status: 'ACTIVE',
+      isActive: true
     });
     setFormErrors({});
     setShowPassword(false);
@@ -152,7 +164,14 @@ function UserManagement() {
   };
 
   const handleFormChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const newData = { ...prev, [field]: value };
+      // If status changes, update isActive boolean automatically
+      if (field === 'status') {
+        newData.isActive = (value === 'ACTIVE');
+      }
+      return newData;
+    });
     // Clear error for this field when user starts typing
     if (formErrors[field]) {
       setFormErrors(prev => ({ ...prev, [field]: '' }));
@@ -257,9 +276,11 @@ function UserManagement() {
   // Filter and search logic
   const filteredData = useMemo(() => {
     return staffData.filter(staff => {
+      const name = staff.name || '';
+      const email = staff.email || '';
       const matchesSearch =
-        staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        staff.email.toLowerCase().includes(searchTerm.toLowerCase());
+        name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        email.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesRole = roleFilter === 'All Roles' || staff.role === roleFilter;
 
@@ -643,7 +664,7 @@ function UserManagement() {
                     onChange={(e) => handleFormChange('status', e.target.value)}
                   >
                     <option value="ACTIVE">Active</option>
-                    <option value="DISABLED">Disabled</option>
+                    <option value="INACTIVE">Inactive</option>
                   </select>
                 </div>
               </div>

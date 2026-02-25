@@ -61,23 +61,24 @@ function App() {
     }
   }, [activeSubView, isAuthenticated]);
 
-  // Shared Data Fetching for Dashboard and Sidebar Badge
-  useEffect(() => {
-    if (isAuthenticated && view === 'app') {
-      const fetchSummary = async () => {
-        try {
-          const response = await apiClient.get('/dashboard/summary/');
-          setSummary(response.data);
-        } catch (error) {
-          console.error("Error fetching summary:", error);
-        }
-      };
-
-      fetchSummary();
-      const interval = setInterval(fetchSummary, 30000);
-      return () => clearInterval(interval);
+  // Shared Data Fetching — Admin summary stats for sidebar badges
+  // Only Admins need this endpoint; Doctors and Nurses have their own dashboards
+  const fetchSummary = async () => {
+    if (!isAuthenticated || view !== 'app') return;
+    if (currentUser?.role !== 'Admin') return; // Skip for non-Admin roles
+    try {
+      const response = await apiClient.get('/dashboard/summary/');
+      setSummary(response.data);
+    } catch (error) {
+      console.error("Error fetching summary:", error);
     }
-  }, [isAuthenticated, view]);
+  };
+
+  useEffect(() => {
+    if (isAuthenticated && view === 'app' && currentUser?.role === 'Admin') {
+      fetchSummary();
+    }
+  }, [isAuthenticated, view, currentUser]);
 
   useEffect(() => {
     if (view === 'splash') {
@@ -157,7 +158,7 @@ function App() {
       case 'settings':
         return <Settings />;
       case 'alerts':
-        return <Alerts />;
+        return <Alerts onAlertDismissed={fetchSummary} />;
       default:
         // This default case might need to be more robust, e.g., redirect to a role-specific default
         if (currentUser?.role === 'Admin') {

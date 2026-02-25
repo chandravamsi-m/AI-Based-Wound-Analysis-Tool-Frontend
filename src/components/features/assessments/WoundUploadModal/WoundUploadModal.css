@@ -3,6 +3,17 @@
     width: 600px;
 }
 
+.form-error {
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #fecaca;
+    background-color: #fef2f2;
+    color: #b91c1c;
+    font-size: 13px;
+    font-weight: 600;
+}
+
 .image-upload-area {
     border: 2px dashed #cbd5e1;
     border-radius: 12px;
