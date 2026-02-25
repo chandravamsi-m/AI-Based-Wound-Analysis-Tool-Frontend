@@ -498,18 +498,87 @@
 }
 
 @media (max-width: 900px) {
+  .doctor-dashboard-wrapper {
+    padding: 16px;
+  }
+  
   .stats-row-premium {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 }
 
 @media (max-width: 600px) {
-  .stats-row-premium {
-    grid-template-columns: 1fr;
+  .doctor-dashboard-wrapper {
+    padding: 12px 14px;
   }
+
   .dashboard-header-premium {
     flex-direction: column;
     align-items: flex-start;
-    gap: 24px;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .header-actions-premium {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .btn-report-bordered, .btn-new-assessment-filled {
+    width: 100%;
+    padding: 0 4px;
+    font-size: 11px; /* Slightly smaller for row fit */
+    height: 38px;
+    letter-spacing: -0.01em;
+  }
+
+  .stats-row-premium {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .doc-stat-card {
+    padding: 14px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  /* Compact Worklist on Mobile */
+  .schedule-row {
+    gap: 12px;
+  }
+
+  .task-time-badge-circular {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 11px;
+  }
+
+  .task-left-group {
+    min-width: 60px;
+  }
+
+  .task-info-right h4 {
+    font-size: 14px;
+  }
+
+  .task-info-right p {
+    font-size: 12px;
+  }
+
+  .card-header-modern {
+    padding: 12px 14px;
+  }
+}
+
+@media (max-width: 400px) {
+  .btn-report-bordered span, .btn-new-assessment-filled span {
+    display: block; /* Keep text visible but scale down */
   }
 }
