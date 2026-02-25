@@ -48,26 +48,39 @@ const SystemLogs = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [severityFilter, setSeverityFilter] = useState('All Severities');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalLogs, setTotalLogs] = useState(0);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10; // Increased for better view
 
   useEffect(() => {
-    fetchLogs();
-    const interval = setInterval(fetchLogs, 30000); // Poll every 30 seconds
-    return () => clearInterval(interval);
-  }, [searchTerm, severityFilter, currentPage]);
+    // Debounce search to protect Firestore quota
+    const timer = setTimeout(() => {
+      fetchLogs();
+    }, searchTerm ? 500 : 0); // Only debounce if user is typing
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchTerm, severityFilter, startDate, endDate]);
 
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      let url = '/logs/?';
-      if (searchTerm) url += `search=${encodeURIComponent(searchTerm)}&`;
-      if (severityFilter !== 'All Severities') url += `severity=${severityFilter}&`;
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      if (severityFilter !== 'All Severities') params.append('severity', severityFilter);
+      if (startDate) params.append('start_date', startDate);
+      if (endDate) params.append('end_date', endDate);
 
-      const response = await apiClient.get(url);
+      const response = await apiClient.get(`/logs/?${params.toString()}`);
       setLogs(response.data);
       setTotalLogs(response.data.length);
+      // Reset to page 1 if search/filter changes
+      if (currentPage > 1 && response.data.length <= (currentPage - 1) * itemsPerPage) {
+        setCurrentPage(1);
+      }
     } catch (error) {
       console.error("Error fetching logs:", error);
     } finally {
@@ -97,10 +110,10 @@ const SystemLogs = () => {
           <h1>System Audit Logs</h1>
           <p>Monitor system-wide actions, security events, and administrative changes.</p>
         </div>
-        <button className="export-logs-btn">
+        {/* <button className="export-logs-btn">
           <Download size={18} />
           <span>Export Logs</span>
-        </button>
+        </button> */}
       </div>
 
       <div className="logs-content-card">
@@ -116,10 +129,27 @@ const SystemLogs = () => {
           </div>
 
           <div className="filter-group">
-            <button className="date-filter-btn">
-              <Calendar size={18} />
-              <span>Oct 20, 2023 - Oct 27, 2023</span>
-            </button>
+            <div className="date-range-filter">
+              <Calendar size={18} className="calendar-icon" />
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="date-input"
+                placeholder="Start Date"
+              />
+              <span className="date-separator">-</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="date-input"
+                placeholder="End Date"
+              />
+              {(startDate || endDate) && (
+                <button className="clear-dates-btn" onClick={() => { setStartDate(''); setEndDate(''); }}>×</button>
+              )}
+            </div>
 
             <div className="severity-filter">
               <select
@@ -213,20 +243,25 @@ const SystemLogs = () => {
             SYSTEM GOVERNANCE: CHANGES IMPACT BILLING & AUDIT LOGS
           </div>
           <div className="logs-pagination">
-            <button
-              className="logs-pagination-btn"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-            >
-              Prev
-            </button>
-            <button
-              className="logs-pagination-btn"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              Next
-            </button>
+            <div className="pagination-info">
+              Showing {totalLogs === 0 ? 0 : startEntry}-{endEntry} of {totalLogs}
+            </div>
+            <div className="pagination-controls">
+              <button
+                className="logs-pagination-btn"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(currentPage - 1)}
+              >
+                Prev
+              </button>
+              <button
+                className="logs-pagination-btn"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(currentPage + 1)}
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       </div>

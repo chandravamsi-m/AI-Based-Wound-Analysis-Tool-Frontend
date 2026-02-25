@@ -5,8 +5,6 @@ import logo from '../../../assets/logo.svg';
 import lockIcon from '../../../assets/lock-icon.svg';
 import authService from '../../../services/authService';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
-
 function Login({ onLoginSuccess }) {
   const [formData, setFormData] = useState({
     email: '',

@@ -3,9 +3,9 @@ import { X, Upload, Camera, AlertCircle } from 'lucide-react';
 import apiClient from '../../../../services/apiClient';
 import './WoundUploadModal.css';
 
-function WoundUploadModal({ onClose, onSuccess }) {
+function WoundUploadModal({ onClose, onSuccess, onCompleted, preSelectedPatientId, taskId }) {
     const [patients, setPatients] = useState([]);
-    const [selectedPatientId, setSelectedPatientId] = useState('');
+    const [selectedPatientId, setSelectedPatientId] = useState(preSelectedPatientId || '');
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [notes, setNotes] = useState('');
@@ -21,7 +21,7 @@ function WoundUploadModal({ onClose, onSuccess }) {
         try {
             const response = await apiClient.get('/clinical/patients/'); // Only assigned patients
             setPatients(response.data);
-            if (response.data.length > 0) {
+            if (!preSelectedPatientId && response.data.length > 0) {
                 setSelectedPatientId(response.data[0].id);
             }
         } catch (err) {
@@ -59,15 +59,45 @@ function WoundUploadModal({ onClose, onSuccess }) {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            // Don't close immediately, show analysis
-            setAnalysisResult(response.data);
-            onSuccess(); // Trigger refresh on parent
+            const result = response?.data;
+            const hasRequiredFields = !!(
+                result &&
+                result.image &&
+                result.stage &&
+                result.created_at &&
+                typeof result.width !== 'undefined' &&
+                typeof result.depth !== 'undefined'
+            );
+
+            if (!hasRequiredFields) {
+                setError('Analysis completed, but the report payload was incomplete. Please try again.');
+                return;
+            }
+
+            // Auto-complete task if opened via a task
+            if (taskId) {
+                try {
+                    await apiClient.post(`/clinical/nurse/tasks/${taskId}/complete/`);
+                } catch (taskErr) {
+                    console.error('Task auto-completion failed:', taskErr);
+                }
+            }
+
+            // Keep modal open and show report first.
+            setAnalysisResult(result);
         } catch (err) {
             console.error('Upload failed:', err);
             setError('Failed to upload image. Please try again.');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleAnalysisClose = () => {
+        onClose?.();
+        // Backward compatibility for existing callers
+        onSuccess?.();
+        onCompleted?.();
     };
 
     return (
@@ -77,7 +107,10 @@ function WoundUploadModal({ onClose, onSuccess }) {
                     <h2 className="modal-title">
                         {analysisResult ? 'Clinical Analysis Report' : 'Upload Wound Detail'}
                     </h2>
-                    <button className="btn-close" onClick={onClose}>
+                    <button
+                        className="btn-close"
+                        onClick={analysisResult ? handleAnalysisClose : onClose}
+                    >
                         <X size={20} />
                     </button>
                 </div>
@@ -152,11 +185,11 @@ function WoundUploadModal({ onClose, onSuccess }) {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '13px' }}>
                                 <div>
                                     <span style={{ color: '#64748b' }}>Patient:</span>
-                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>{analysisResult.patient_name}</div>
+                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>{analysisResult.patient_name || 'N/A'}</div>
                                 </div>
                                 <div>
                                     <span style={{ color: '#64748b' }}>Assessed By:</span>
-                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>{analysisResult.nurse_name}</div>
+                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>{analysisResult.nurse_name || 'N/A'}</div>
                                 </div>
                                 <div>
                                     <span style={{ color: '#64748b' }}>Date:</span>
@@ -191,7 +224,7 @@ function WoundUploadModal({ onClose, onSuccess }) {
                         </div>
 
                         <div className="modal-footer">
-                            <button type="button" className="btn-save" onClick={onClose} style={{ width: '100%' }}>
+                            <button type="button" className="btn-save" onClick={handleAnalysisClose} style={{ width: '100%' }}>
                                 Close & Return to Dashboard
                             </button>
                         </div>

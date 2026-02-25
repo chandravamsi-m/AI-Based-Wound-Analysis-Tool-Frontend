@@ -26,6 +26,7 @@ import {
 import apiClient from '../../../services/apiClient';
 import TaskAssignmentModal from '../../../components/features/assessments/TaskAssignmentModal/TaskAssignmentModal';
 import WoundUploadModal from '../../../components/features/assessments/WoundUploadModal/WoundUploadModal';
+import DoctorCalendarModal from '../../../components/features/assessments/DoctorCalendarModal/DoctorCalendarModal';
 import './DoctorDashboard.css';
 
 const StatCard = ({ icon: Icon, label, value, trend, color, subtext }) => {
@@ -61,6 +62,7 @@ const DoctorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -91,6 +93,7 @@ const DoctorDashboard = () => {
     </div>
   );
 
+  // Take last 6 weeks of trend
   const areaData = stats?.healing_trend.map((val, i) => ({
     name: `Week ${i + 1}`,
     value: val
@@ -141,12 +144,12 @@ const DoctorDashboard = () => {
           subtext="Requires daily monitoring"
         />
         <StatCard
-          icon={Activity}
-          label="Wound Healing Rate"
-          value={summary?.healing_rate || "84%"}
-          trend="+5%"
+          icon={ClipboardList}
+          label="Pending Tasks"
+          value={stats?.pending_tasks || "0"}
+          trend="Team Total"
           color="#10b981"
-          subtext="Patients improving this week"
+          subtext="Direct and delegated"
         />
         <StatCard
           icon={Clock}
@@ -164,14 +167,19 @@ const DoctorDashboard = () => {
             <div className="card-header-modern">
               <div className="header-title">
                 <Calendar size={20} />
-                <h3>Scheduled for Today</h3>
+                <h3>Clinical Worklist</h3>
               </div>
-              <button className="view-calendar-link">View Calendar</button>
+              <button className="view-calendar-link" onClick={() => setShowCalendarModal(true)}>View Calendar</button>
             </div>
             <div className="schedule-list-premium">
               {schedule.map(task => (
                 <div key={task.id} className="schedule-row">
-                  <div className="task-time-badge-circular">{task.time}</div>
+                  <div className="task-left-group">
+                    <div className="task-time-badge-circular">{task.time}</div>
+                    <span className={`task-owner-badge ${task.assignment_type?.toLowerCase()}`}>
+                      {task.assignment_type === 'DIRECT' ? 'My Task' : 'Delegated'}
+                    </span>
+                  </div>
                   <div className="task-info-right">
                     <h4>{task.title.includes('Assessment') ? task.title : `Assessment: ${task.title}`}</h4>
                     <p>{task.description}</p>
@@ -292,6 +300,13 @@ const DoctorDashboard = () => {
         <WoundUploadModal
           onClose={() => setShowUploadModal(false)}
           onSuccess={fetchDashboardData}
+        />
+      )}
+
+      {showCalendarModal && (
+        <DoctorCalendarModal
+          onClose={() => setShowCalendarModal(false)}
+          tasks={schedule}
         />
       )}
     </div>

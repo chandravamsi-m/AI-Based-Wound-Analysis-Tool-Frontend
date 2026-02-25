@@ -17,6 +17,9 @@ function NurseDashboard({ searchQuery = '', onNavigate }) {
   });
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showVitalsModal, setShowVitalsModal] = useState(false);
+  const [selectedPatientId, setSelectedPatientId] = useState(null);
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
+  const [refreshTasks, setRefreshTasks] = useState(0);
 
   useEffect(() => {
     fetchDashboardStats();
@@ -29,6 +32,28 @@ function NurseDashboard({ searchQuery = '', onNavigate }) {
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     }
+  };
+
+  const handleTaskAction = (task) => {
+    setSelectedPatientId(task.patientId);
+    setSelectedTaskId(task.id);
+    if (task.taskType === 'VITALS') {
+      setShowVitalsModal(true);
+    } else if (task.taskType === 'WOUND_CARE') {
+      setShowUploadModal(true);
+    }
+  };
+
+  const handleManualVitals = () => {
+    setSelectedPatientId(null);
+    setSelectedTaskId(null);
+    setShowVitalsModal(true);
+  };
+
+  const handleManualUpload = () => {
+    setSelectedPatientId(null);
+    setSelectedTaskId(null);
+    setShowUploadModal(true);
   };
 
   const stats = [
@@ -80,14 +105,10 @@ function NurseDashboard({ searchQuery = '', onNavigate }) {
           </div>
         </div>
         <div className="dashboard-header-actions">
-          <button className="btn-shift-log" onClick={() => alert('Shift log export is coming soon.')}>
+          {/* <button className="btn-shift-log" onClick={() => alert('Shift log export is coming soon.')}>
             <FileText size={18} />
             <span>View Shift Log</span>
-          </button>
-          <button className="btn-patient-intake" onClick={() => onNavigate('add-patient')}>
-            <Plus size={18} />
-            <span>New Patient Intake</span>
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -111,7 +132,7 @@ function NurseDashboard({ searchQuery = '', onNavigate }) {
       </div>
 
       <div className="dashboard-actions">
-        <button className="action-card-primary" onClick={() => setShowUploadModal(true)}>
+        <button className="action-card-primary" onClick={handleManualUpload}>
           <div className="action-icon-wrapper">
             <Camera size={32} />
           </div>
@@ -120,7 +141,7 @@ function NurseDashboard({ searchQuery = '', onNavigate }) {
             <p className="action-description">Sync clinical photos with AI analysis</p>
           </div>
         </button>
-        <button className="action-card-secondary" onClick={() => setShowVitalsModal(true)}>
+        <button className="action-card-secondary" onClick={handleManualVitals}>
           <div className="action-icon-wrapper">
             <Activity size={28} />
           </div>
@@ -135,7 +156,7 @@ function NurseDashboard({ searchQuery = '', onNavigate }) {
         <div className="dashboard-left">
           <div className="section-card">
             <h3 className="section-title">TASKS & RESPONSIBILITIES</h3>
-            <ShiftTaskList />
+            <ShiftTaskList onTaskAction={handleTaskAction} refreshTrigger={refreshTasks} />
           </div>
         </div>
         <div className="dashboard-right">
@@ -150,16 +171,24 @@ function NurseDashboard({ searchQuery = '', onNavigate }) {
 
       {showUploadModal && (
         <WoundUploadModal
+          preSelectedPatientId={selectedPatientId}
+          taskId={selectedTaskId}
           onClose={() => setShowUploadModal(false)}
-          onSuccess={fetchDashboardStats}
+          onSuccess={() => {
+            fetchDashboardStats();
+            setRefreshTasks(prev => prev + 1);
+          }}
         />
       )}
 
       {showVitalsModal && (
         <VitalsModal
+          preSelectedPatientId={selectedPatientId}
+          taskId={selectedTaskId}
           onClose={() => setShowVitalsModal(false)}
           onSuccess={() => {
             fetchDashboardStats();
+            setRefreshTasks(prev => prev + 1);
             alert('Vitals recorded successfully!');
           }}
         />

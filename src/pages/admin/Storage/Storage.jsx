@@ -36,8 +36,6 @@ const Storage = () => {
 
   React.useEffect(() => {
     fetchStorageData();
-    const interval = setInterval(fetchStorageData, 30000);
-    return () => clearInterval(interval);
   }, []);
 
   if (loading) return <div className="storage-management-container">Loading Storage Stats...</div>;
@@ -64,14 +62,14 @@ const Storage = () => {
           <p>Monitor system capacity and manage clinical data storage policies.</p>
         </div>
         <div className="header-actions">
-          <button className="export-usage-btn">
+          {/* <button className="export-usage-btn">
             <Download size={18} />
             <span>Export Usage Report</span>
           </button>
           <button className="manage-backups-btn">
             <CloudDownload size={18} />
             <span>Manage Backups</span>
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -85,7 +83,7 @@ const Storage = () => {
           </div>
           <div className="capacity-content">
             <div className="capacity-info">
-              <div className="capacity-value">{storageData.used_capacity} <span>TB / {storageData.total_capacity} TB</span></div>
+              <div className="capacity-value">{storageData.used_capacity_display} <span>/ {storageData.total_capacity_display}</span></div>
               <div className="status-indicator">
                 <TrendingUp size={16} />
                 <span>Healthy Status</span>
@@ -126,7 +124,7 @@ const Storage = () => {
             <span>Database Usage</span>
           </div>
           <div className="usage-body">
-            <div className="usage-value">{storageData.database_usage_gb} <span>GB</span></div>
+            <div className="usage-value">{storageData.database_usage_display}</div>
             <div className="progress-bar-container">
               <div className="progress-bar db" style={{ width: `${storageData.database_percentage}%` }}></div>
             </div>
@@ -144,7 +142,7 @@ const Storage = () => {
             <span>File Storage</span>
           </div>
           <div className="usage-body">
-            <div className="usage-value">{storageData.file_storage_gb.toLocaleString()} <span>GB</span></div>
+            <div className="usage-value">{storageData.file_storage_display}</div>
             <div className="progress-bar-container">
               <div className="progress-bar files" style={{ width: `${storageData.file_storage_percentage}%` }}></div>
             </div>

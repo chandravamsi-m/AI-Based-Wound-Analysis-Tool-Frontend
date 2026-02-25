@@ -13,7 +13,8 @@ function TaskAssignmentModal({ onClose, onSuccess }) {
         assigned_to: '',
         title: '',
         due_time: '',
-        priority: 'medium'
+        priority: 'medium',
+        task_type: 'GEN' // New field
     });
 
     useEffect(() => {
@@ -33,10 +34,11 @@ function TaskAssignmentModal({ onClose, onSuccess }) {
 
     const fetchNurses = async () => {
         try {
-            const response = await apiClient.get('/users/');
-            // Filter by role from custom user model
-            const staffList = response.data.filter(u => u.role === 'Nurse');
-            setNurses(staffList);
+            // Optimized: Fetch only Nurses via backend filtering + limit
+            const response = await apiClient.get('/users/', {
+                params: { role: 'Nurse', limit: 20 }
+            });
+            setNurses(response.data);
         } catch (err) {
             console.error('Error fetching nurses:', err);
         }
@@ -139,14 +141,17 @@ function TaskAssignmentModal({ onClose, onSuccess }) {
 
                     <div className="form-grid">
                         <div className="form-group">
-                            <label>Due Time <span className="required">*</span></label>
-                            <input
-                                type="time"
-                                name="due_time"
-                                value={formData.due_time}
+                            <label>Task Category <span className="required">*</span></label>
+                            <select
+                                name="task_type"
+                                value={formData.task_type}
                                 onChange={handleChange}
                                 required
-                            />
+                            >
+                                <option value="GEN">General Nursing</option>
+                                <option value="VITALS">Vital Signs Check</option>
+                                <option value="WOUND_CARE">Wound Assessment</option>
+                            </select>
                         </div>
 
                         <div className="form-group">
@@ -157,6 +162,17 @@ function TaskAssignmentModal({ onClose, onSuccess }) {
                                 <option value="low">Routine</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div className="form-group full-width">
+                        <label>Due Time <span className="required">*</span></label>
+                        <input
+                            type="time"
+                            name="due_time"
+                            value={formData.due_time}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     <div className="modal-footer">

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Search, Filter, Plus, ShieldAlert } from 'lucide-react';
+import { Search, Filter, Plus } from 'lucide-react';
 import apiClient from '../../../services/apiClient';
-import SecurityDisclaimerModal from '../../../components/features/patients/SecurityDisclaimerModal/SecurityDisclaimerModal';
 import PatientDetailsModal from '../../../components/features/patients/PatientDetailsModal/PatientDetailsModal';
 import './PatientsList.css';
 
@@ -11,9 +10,7 @@ function PatientsList({ onAddPatient }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [showSecurityWarning, setShowSecurityWarning] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [isAcknowledged, setIsAcknowledged] = useState(sessionStorage.getItem('clinical_registry_acknowledged') === 'true');
   const itemsPerPage = 5;
 
   // Get current user to check role
@@ -22,19 +19,18 @@ function PatientsList({ onAddPatient }) {
 
   useEffect(() => {
     fetchPatients();
-  }, [isAcknowledged]);
+  }, []);
 
   const fetchPatients = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // If nurse and not acknowledged, fetch restricted list. Otherwise fetch all.
-      const endpoint = (isNurse && !isAcknowledged) ? '/clinical/patients/' : '/clinical/patients/?all=true';
-      const response = await apiClient.get(endpoint);
-      // Transform API data to UI format
+      // Backend handles role-based filtering:
+      // Nurses: assigned only | Doctors/Admins: full registry
+      const response = await apiClient.get('/clinical/patients/');
+
       const formatted = response.data.map(p => {
-        // Simple logic to determine risk/color based on status
         let riskLvl = 'Low';
         let rColor = '#007A55';
         let rBg = '#D0FAE5';
@@ -52,13 +48,13 @@ function PatientsList({ onAddPatient }) {
         return {
           id: p.id,
           name: p.name,
-          mrn: p.mrn, // Using the new auto-generated MRN field
+          mrn: p.mrn,
           riskLevel: riskLvl,
           riskColor: rColor,
           riskBg: rBg,
           lastVisit: p.admission_date ? new Date(p.admission_date).toLocaleDateString() : 'New',
-          activeWounds: Math.floor(Math.random() * 3),
-          ...p // Preserve all original API fields
+          activeWounds: p.active_wounds || 0,
+          ...p
         };
       });
       setPatients(formatted);
@@ -75,7 +71,6 @@ function PatientsList({ onAddPatient }) {
     p.mrn.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -94,17 +89,6 @@ function PatientsList({ onAddPatient }) {
     setCurrentPage(1);
   };
 
-  const handleSecurityConfirm = () => {
-    setIsAcknowledged(true);
-    setShowSecurityWarning(false);
-    sessionStorage.setItem('clinical_registry_acknowledged', 'true');
-    // fetchPatients will trigger via useEffect
-  };
-
-  const handleSecurityCancel = () => {
-    setShowSecurityWarning(false);
-  };
-
   return (
     <div className="patients-list-page">
       <header className="patients-header">
@@ -114,10 +98,12 @@ function PatientsList({ onAddPatient }) {
             <p className="patients-header-subtitle">Manage patient records and wound history.</p>
           </div>
           <div className="patients-header-right">
-            <button className="btn-add-patient" onClick={onAddPatient}>
-              <Plus size={16} />
-              <span>Add Patient</span>
-            </button>
+            {!isNurse && (
+              <button className="btn-add-patient" onClick={onAddPatient}>
+                <Plus size={16} />
+                <span>Add Patient</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -139,18 +125,6 @@ function PatientsList({ onAddPatient }) {
               <Filter size={16} />
               <span>Filter</span>
             </button>
-            {isNurse && !isAcknowledged && (
-              <button className="btn-global-access" onClick={() => setShowSecurityWarning(true)}>
-                <Search size={16} />
-                <span>Search Global Registry</span>
-              </button>
-            )}
-            {isNurse && isAcknowledged && (
-              <div className="protocol-active-badge">
-                <ShieldAlert size={14} />
-                <span>GLOBAL ACCESS ACTIVE</span>
-              </div>
-            )}
           </div>
         </div>
 
@@ -254,14 +228,6 @@ function PatientsList({ onAddPatient }) {
         </div>
       </div>
 
-
-      {showSecurityWarning && (
-        <SecurityDisclaimerModal
-          onConfirm={handleSecurityConfirm}
-          onCancel={handleSecurityCancel}
-        />
-      )}
-
       {selectedPatient && (
         <PatientDetailsModal
           patient={selectedPatient}
@@ -273,4 +239,3 @@ function PatientsList({ onAddPatient }) {
 }
 
 export default PatientsList;
-

@@ -1,34 +1,36 @@
 import { useState, useEffect } from 'react';
-import { List, User } from 'lucide-react';
+import { List, User, Heart, Camera, Clipboard, AlertCircle } from 'lucide-react';
 import apiClient from '../../../../services/apiClient';
 import './ShiftTaskList.css';
 
-function ShiftTaskList() {
+function ShiftTaskList({ onTaskAction, refreshTrigger }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('pending'); // 'all', 'pending', 'completed'
 
-  const fetchTasks = async () => {
+  const fetchTasks = async (showLoading = true) => {
     try {
-      if (loading) setError(null); // Clear error if retrying
+      if (showLoading) setLoading(true);
       const response = await apiClient.get('/clinical/nurse/tasks/');
       const formatted = response.data.map(t => ({
         id: t.id,
         title: t.title,
         patient: t.patient_name || 'Unknown Patient',
+        patientId: t.patient_id,
         assignedTo: t.assigned_to_name || 'Unassigned',
         dueTime: t.due_time,
         priority: t.priority,
-        priorityColor: t.priority === 'high' ? '#FB2C36' : (t.priority === 'medium' ? '#FE9A00' : '#CAD5E2'),
+        priorityColor: t.priority === 'HIGH' ? '#FB2C36' : (t.priority === 'MEDIUM' ? '#FE9A00' : '#CAD5E2'),
         status: t.status,
+        taskType: t.task_type || 'GEN',
         isCompleted: t.status === 'COMPLETED'
       }));
       setTasks(formatted);
+      setError(null);
     } catch (err) {
       console.error('Error fetching tasks:', err);
-      // Only set error if we don't have tasks to show (failed initial load)
-      if (tasks.length === 0) setError('Unable to load tasks.');
+      if (tasks.length === 0) setError('Unable to sync tasks.');
     } finally {
       setLoading(false);
     }
@@ -36,26 +38,45 @@ function ShiftTaskList() {
 
   useEffect(() => {
     fetchTasks();
-    const interval = setInterval(fetchTasks, 5000);
-    return () => clearInterval(interval);
   }, []);
 
-  const toggleTaskCompletion = async (taskId, currentStatus) => {
-    const newStatus = currentStatus === 'COMPLETED' ? 'PENDING' : 'COMPLETED';
+  useEffect(() => {
+    if (refreshTrigger > 0) {
+      fetchTasks(false);
+    }
+  }, [refreshTrigger]);
+
+  const toggleTaskCompletion = async (e, taskId, currentStatus) => {
+    e.stopPropagation(); // Avoid triggering the modal
+    if (currentStatus === 'COMPLETED') return;
 
     // Optimistic UI update
-    setTasks(tasks.map(t =>
-      t.id === taskId ? { ...t, status: newStatus, isCompleted: newStatus === 'COMPLETED' } : t
-    ));
+    setTasks(prev =>
+      prev.map(t => t.id === taskId ? { ...t, status: 'COMPLETED', isCompleted: true } : t)
+    );
 
     try {
-      await apiClient.patch(`/clinical/nurse/tasks/${taskId}/`, {
-        status: newStatus
-      });
-      // fetchTasks(); // Re-fetch to confirm sync if needed
+      await apiClient.post(`/clinical/nurse/tasks/${taskId}/complete/`);
     } catch (err) {
-      console.error('Failed to update task:', err);
-      fetchTasks(); // Revert on error
+      console.error('Failed to complete task:', err);
+      fetchTasks(false);
+    }
+  };
+
+  const handleTaskClick = (task) => {
+    if (task.status === 'COMPLETED') return;
+
+    // Dynamic Clinical Workflow Triggers
+    if (onTaskAction) {
+      onTaskAction(task);
+    }
+  };
+
+  const getTaskIcon = (type) => {
+    switch (type) {
+      case 'VITALS': return <Heart size={16} color="#ef4444" />;
+      case 'WOUND_CARE': return <Camera size={16} color="#2f65ac" />;
+      default: return <Clipboard size={16} color="#64748b" />;
     }
   };
 
@@ -86,23 +107,28 @@ function ShiftTaskList() {
 
       <div className="task-list-items">
         {loading && tasks.length === 0 ? (
-          <div className="task-item" style={{ justifyContent: 'center', color: '#64748b' }}>Loading tasks...</div>
+          <div className="task-item" style={{ justifyContent: 'center', color: '#64748b' }}>Establishing clinical sync...</div>
         ) : error ? (
           <div className="task-item" style={{ justifyContent: 'center', flexDirection: 'column', gap: '8px', color: '#ef4444' }}>
+            <AlertCircle size={20} />
             <span>{error}</span>
-            <button onClick={() => { setLoading(true); fetchTasks(); }} style={{ border: 'none', background: 'none', color: '#2d62a8', fontWeight: '600', cursor: 'pointer' }}>Retry</button>
+            <button onClick={() => fetchTasks()} style={{ border: 'none', background: 'none', color: '#2d62a8', fontWeight: '600', cursor: 'pointer' }}>Retry Sync</button>
           </div>
         ) : filteredTasks.length > 0 ? (
           filteredTasks.map((task) => (
-            <div key={task.id} className={`task-item ${task.isCompleted ? 'completed' : ''}`}>
+            <div
+              key={task.id}
+              className={`task-item ${task.isCompleted ? 'completed' : ''} ${task.taskType !== 'GEN' ? 'interactive' : ''}`}
+              onClick={() => handleTaskClick(task)}
+            >
               <div className="task-item-left">
                 <div className="task-checkbox-wrapper">
                   <input
                     type="checkbox"
                     className="task-checkbox"
                     checked={task.isCompleted}
-                    onChange={() => toggleTaskCompletion(task.id, task.status)}
-                    aria-label={`Mark task ${task.title} as ${task.isCompleted ? 'incomplete' : 'complete'}`}
+                    onChange={(e) => toggleTaskCompletion(e, task.id, task.status)}
+                    onClick={(e) => e.stopPropagation()}
                   />
                 </div>
                 <div
@@ -110,14 +136,12 @@ function ShiftTaskList() {
                   style={{ background: task.priorityColor }}
                 ></div>
                 <div className="task-item-content">
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {getTaskIcon(task.taskType)}
                     <h4 className="task-item-title">{task.title}</h4>
                     {task.status === 'MISSED' && <span className="task-status-badge status-missed">MISSED</span>}
                   </div>
                   <p className="task-item-patient">{task.patient}</p>
-                  <p className="task-item-assigned" style={{ fontSize: '11px', color: '#64748b', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <User size={10} /> {task.assignedTo}
-                  </p>
                 </div>
               </div>
               <div className="task-item-due">

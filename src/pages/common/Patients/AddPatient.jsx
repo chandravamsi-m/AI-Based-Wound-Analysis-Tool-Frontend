@@ -28,15 +28,16 @@ function AddPatient({ onBack, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState(null);
 
-  // Fetch all physicians on mount
+  // Fetch doctors on mount
   useEffect(() => {
     const fetchPhysicians = async () => {
       try {
-        const response = await apiClient.get('/users/');
-        // Filter to only show users with the 'Doctor' role
-        const doctors = response.data.filter(u => u.role === 'Doctor');
-        setAllPhysicians(doctors);
-        setFilteredPhysicians(doctors); // Pre-fill filtered list
+        // Optimized: Fetch only Doctors via backend filtering + limit
+        const response = await apiClient.get('/users/', {
+          params: { role: 'Doctor', limit: 50 }
+        });
+        setAllPhysicians(response.data);
+        setFilteredPhysicians(response.data); // Pre-fill filtered list
 
         // Auto-assign if current user is a Doctor
         const storedUser = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
@@ -145,7 +146,7 @@ function AddPatient({ onBack, onSuccess }) {
 
   return (
     <div className="add-patient-page-wrapper">
-      <div className="breadcrumb-nav">
+      {/* <div className="breadcrumb-nav">
         <span className="breadcrumb-item" onClick={onBack}>
           <Home size={14} />
           Home
@@ -154,7 +155,7 @@ function AddPatient({ onBack, onSuccess }) {
         <span className="breadcrumb-item" onClick={onBack}>Patients</span>
         <ChevronRight size={14} className="separator" />
         <span className="breadcrumb-item active">Add New Patient</span>
-      </div>
+      </div> */}
 
       <header className="page-header-premium">
         <h1>Add New Patient</h1>
