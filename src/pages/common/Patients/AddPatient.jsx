@@ -15,7 +15,14 @@ function AddPatient({ onBack, onSuccess }) {
     physicianId: '',
     physicianName: '',
     diagnosis: '',
-    status: 'Stable'
+    status: 'Stable',
+    contactNumber: '',
+    address: '',
+    emergencyContactName: '',
+    emergencyContactNumber: '',
+    diabetesType: 'None',
+    allergies: 'None',
+    bloodGroup: '--'
   });
 
   const [allPhysicians, setAllPhysicians] = useState([]);
@@ -124,7 +131,14 @@ function AddPatient({ onBack, onSuccess }) {
       bed: formData.bed,
       assigned_physician: formData.physicianId || null,
       diagnosis: formData.diagnosis,
-      status: formData.status
+      status: formData.status,
+      contact_number: formData.contactNumber,
+      address: formData.address,
+      emergency_contact_name: formData.emergencyContactName,
+      emergency_contact_number: formData.emergencyContactNumber,
+      diabetes_type: formData.diabetesType,
+      allergies: formData.allergies,
+      blood_group: formData.bloodGroup
     };
 
     try {
@@ -325,6 +339,99 @@ function AddPatient({ onBack, onSuccess }) {
                 placeholder="Enter initial diagnosis or reason for wound care referral..."
               ></textarea>
               {errors.diagnosis && <span className="field-error-msg">{errors.diagnosis}</span>}
+            </div>
+          </div>
+
+          <div className="section-divider-line"></div>
+
+          {/* Section 3: Contact & Clinical (New) */}
+          <div className="form-section-premium">
+            <div className="section-title-row">
+              <User size={18} className="section-icon-blue" />
+              <h3>CONTACT & CLINICAL CHASSIS</h3>
+            </div>
+
+            <div className="premium-form-grid">
+              <div className="premium-field-group">
+                <label>Contact Number</label>
+                <input
+                  type="text"
+                  name="contactNumber"
+                  value={formData.contactNumber}
+                  onChange={handleChange}
+                  placeholder="e.g. +1 234 567 890"
+                />
+              </div>
+
+              <div className="premium-field-group">
+                <label>Emergency Contact</label>
+                <input
+                  type="text"
+                  name="emergencyContactName"
+                  value={formData.emergencyContactName}
+                  onChange={handleChange}
+                  placeholder="Contact Name"
+                />
+              </div>
+
+              <div className="premium-field-group">
+                <label>Emergency Phone</label>
+                <input
+                  type="text"
+                  name="emergencyContactNumber"
+                  value={formData.emergencyContactNumber}
+                  onChange={handleChange}
+                  placeholder="Contact Phone"
+                />
+              </div>
+
+              <div className="premium-field-group">
+                <label>Diabetes Type</label>
+                <select name="diabetesType" value={formData.diabetesType} onChange={handleChange}>
+                  <option value="None">None</option>
+                  <option value="Type 1">Type 1</option>
+                  <option value="Type 2">Type 2</option>
+                  <option value="Gestational">Gestational</option>
+                  <option value="Pre-diabetic">Pre-diabetic</option>
+                </select>
+              </div>
+
+              <div className="premium-field-group">
+                <label>Blood Group</label>
+                <select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange}>
+                  <option value="--">Select...</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+
+              <div className="premium-field-group">
+                <label>Allergies</label>
+                <input
+                  type="text"
+                  name="allergies"
+                  value={formData.allergies}
+                  onChange={handleChange}
+                  placeholder="e.g. Penicillin, Latex"
+                />
+              </div>
+
+              <div className="premium-field-group full-width-field">
+                <label>Permanent Address</label>
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  rows="2"
+                  placeholder="Full resident address..."
+                ></textarea>
+              </div>
             </div>
           </div>
 

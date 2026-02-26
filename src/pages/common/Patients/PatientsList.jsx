@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, Filter, Plus } from 'lucide-react';
 import apiClient from '../../../services/apiClient';
 import PatientDetailsModal from '../../../components/features/patients/PatientDetailsModal/PatientDetailsModal';
+import PatientProfile from '../../../components/features/patients/PatientProfile/PatientProfile';
 import './PatientsList.css';
 
 function PatientsList({ onAddPatient }) {
@@ -11,6 +12,7 @@ function PatientsList({ onAddPatient }) {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'profile'
   const itemsPerPage = 5;
 
   // Get current user to check role
@@ -25,11 +27,7 @@ function PatientsList({ onAddPatient }) {
     try {
       setLoading(true);
       setError(null);
-
-      // Backend handles role-based filtering:
-      // Nurses: assigned only | Doctors/Admins: full registry
       const response = await apiClient.get('/clinical/patients/');
-
       const formatted = response.data.map(p => {
         let riskLvl = 'Low';
         let rColor = '#007A55';
@@ -66,6 +64,16 @@ function PatientsList({ onAddPatient }) {
     }
   };
 
+  const handleViewPatient = (patient) => {
+    setSelectedPatient(patient);
+    setViewMode('profile');
+  };
+
+  const handleBackToList = () => {
+    setViewMode('list');
+    setSelectedPatient(null);
+  };
+
   const filteredPatients = patients.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.mrn.toLowerCase().includes(searchTerm.toLowerCase())
@@ -88,6 +96,15 @@ function PatientsList({ onAddPatient }) {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
   };
+
+  if (viewMode === 'profile' && selectedPatient) {
+    return (
+      <PatientProfile
+        patient={selectedPatient}
+        onBack={handleBackToList}
+      />
+    );
+  }
 
   return (
     <div className="patients-list-page">
@@ -194,7 +211,7 @@ function PatientsList({ onAddPatient }) {
                       <span className="patient-wounds">{patient.activeWounds}</span>
                     </td>
                     <td className="text-right">
-                      <button className="btn-view" onClick={() => setSelectedPatient(patient)}>
+                      <button className="btn-view" onClick={() => handleViewPatient(patient)}>
                         View
                       </button>
                     </td>
@@ -227,13 +244,6 @@ function PatientsList({ onAddPatient }) {
           </div>
         </div>
       </div>
-
-      {selectedPatient && (
-        <PatientDetailsModal
-          patient={selectedPatient}
-          onClose={() => setSelectedPatient(null)}
-        />
-      )}
     </div>
   );
 }
