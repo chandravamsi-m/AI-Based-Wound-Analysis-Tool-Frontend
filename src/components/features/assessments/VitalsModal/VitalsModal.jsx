@@ -9,6 +9,9 @@ function VitalsModal({ onClose, onSuccess, preSelectedPatientId, taskId }) {
     const [heartRate, setHeartRate] = useState('');
     const [respiratoryRate, setRespiratoryRate] = useState('');
     const [oxygenSaturation, setOxygenSaturation] = useState('');
+    const [bpSystolic, setBpSystolic] = useState('');
+    const [bpDiastolic, setBpDiastolic] = useState('');
+    const [temperature, setTemperature] = useState('');
     const [notes, setNotes] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -40,6 +43,9 @@ function VitalsModal({ onClose, onSuccess, preSelectedPatientId, taskId }) {
             heart_rate: heartRate === '' ? null : parseInt(heartRate),
             respiratory_rate: respiratoryRate === '' ? null : parseInt(respiratoryRate),
             oxygen_saturation: oxygenSaturation === '' ? null : parseInt(oxygenSaturation),
+            blood_pressure_systolic: bpSystolic === '' ? null : parseInt(bpSystolic),
+            blood_pressure_diastolic: bpDiastolic === '' ? null : parseInt(bpDiastolic),
+            temperature: temperature === '' ? null : parseFloat(temperature),
             nurse_notes: notes
         };
 
@@ -131,6 +137,38 @@ function VitalsModal({ onClose, onSuccess, preSelectedPatientId, taskId }) {
                                 value={respiratoryRate}
                                 onChange={(e) => setRespiratoryRate(e.target.value)}
                                 placeholder="16"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>BP (Systolic / Diastolic)</label>
+                            <div className="bp-input-group" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <input
+                                    type="number"
+                                    value={bpSystolic}
+                                    onChange={(e) => setBpSystolic(e.target.value)}
+                                    placeholder="120"
+                                    style={{ flex: 1 }}
+                                />
+                                <span style={{ color: '#94a3b8' }}>/</span>
+                                <input
+                                    type="number"
+                                    value={bpDiastolic}
+                                    onChange={(e) => setBpDiastolic(e.target.value)}
+                                    placeholder="80"
+                                    style={{ flex: 1 }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Temperature (°C)</label>
+                            <input
+                                type="number"
+                                step="0.1"
+                                value={temperature}
+                                onChange={(e) => setTemperature(e.target.value)}
+                                placeholder="36.6"
                             />
                         </div>
                     </div>

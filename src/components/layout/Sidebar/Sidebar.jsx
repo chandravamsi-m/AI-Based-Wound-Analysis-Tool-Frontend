@@ -44,7 +44,7 @@ function Sidebar({ onSignOut, user, isMobileOpen, onClose, currentView, onViewCh
               <span className="brand-plus">+</span>
             </div>
             <div className="brand-text">
-              <div className="brand-name">MediWound AI</div>
+              <div className="brand-name">MediWoundAI</div>
               <div className="brand-subtitle">
                 {user?.role === 'Admin' ? 'HOSPITAL ADMIN' : 'CLINICIAN PORTAL'}
               </div>
