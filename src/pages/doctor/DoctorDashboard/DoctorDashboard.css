@@ -19,8 +19,18 @@
 .dashboard-header-premium {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.header-left {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .current-date-header {
@@ -29,24 +39,34 @@
   color: #5B8AC4;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin: 0 0 2px 0 !important;
+  padding: 0 !important;
 }
 
 .header-left h1 {
-  font-size: 24px;
+  font-size: 36px !important;
   font-weight: 800;
-  color: #0F172A;
-  margin: 0 0 6px 0;
-  letter-spacing: -0.02em;
+  color: #1E293B;
+  margin: 0 !important;
+  padding: 0 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 0.9 !important;
 }
 
 .header-status {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: #64748B;
   font-weight: 500;
   font-size: 15px;
+  margin: 8px 0 0 0 !important;
+  padding: 0 !important;
+}
+
+.header-status p {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .check-circle-wrapper {
@@ -65,7 +85,8 @@
 .header-actions-premium {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  padding-top: 24px; /* Align with h1/status stack */
 }
 
 .btn-report-bordered, .btn-new-assessment-filled {

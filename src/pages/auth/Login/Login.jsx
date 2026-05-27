@@ -5,7 +5,7 @@ import logo from '../../../assets/logo.svg';
 import lockIcon from '../../../assets/lock-icon.svg';
 import authService from '../../../services/authService';
 
-function Login({ onLoginSuccess }) {
+function Login({ onLoginSuccess, onSignupProgress }) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -137,6 +137,10 @@ function Login({ onLoginSuccess }) {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div className="login-signup-link">
+          New Patient? <a href="#" onClick={(e) => { e.preventDefault(); onSignupProgress(); }}>Register Here</a>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import PatientDetailsModal from '../../../components/features/patients/PatientDe
 import PatientProfile from '../../../components/features/patients/PatientProfile/PatientProfile';
 import './PatientsList.css';
 
-function PatientsList({ onAddPatient }) {
+function PatientsList({ onAddPatient, onNavigate }) {
   const [patients, setPatients] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -102,6 +102,7 @@ function PatientsList({ onAddPatient }) {
       <PatientProfile
         patient={selectedPatient}
         onBack={handleBackToList}
+        onNavigate={onNavigate}
       />
     );
   }

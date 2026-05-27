@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Activity, Shield, HardDrive, FileText, Download, TrendingUp, MoreHorizontal, AlertTriangle, HeartPulse } from 'lucide-react';
+import { Users, Activity, Shield, HardDrive, FileText, Download, TrendingUp, MoreHorizontal, AlertTriangle, HeartPulse, Stethoscope, UserPlus } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import apiClient from '../../../services/apiClient';
 import './Dashboard.css';
@@ -29,7 +29,10 @@ const SeverityTag = ({ severity }) => {
 const Dashboard = ({ onViewChange, summary: initialSummary }) => {
   const [summary, setSummary] = useState(initialSummary);
   const [logs, setLogs] = useState([]);
+  const [pendingPatients, setPendingPatients] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(!initialSummary);
+  const [triageLoading, setTriageLoading] = useState(false);
 
   // Sync with prop summary
   useEffect(() => {
@@ -42,8 +45,14 @@ const Dashboard = ({ onViewChange, summary: initialSummary }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const logsRes = await apiClient.get('/logs/');
+        const [logsRes, triageRes, doctorsRes] = await Promise.all([
+          apiClient.get('/logs/'),
+          apiClient.get('/dashboard/triage/'),
+          apiClient.get('/users/?role=Doctor')
+        ]);
         setLogs(logsRes.data.slice(0, 5));
+        setPendingPatients(triageRes.data);
+        setDoctors(doctorsRes.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -54,6 +63,24 @@ const Dashboard = ({ onViewChange, summary: initialSummary }) => {
     // Fetch logs ONCE on mount — no polling (each call reads 100 docs from Firestore)
     fetchData();
   }, []);
+
+  const handleAssignDoctor = async (patientId, doctorId) => {
+    if (!doctorId) return;
+    setTriageLoading(true);
+    try {
+      await apiClient.post('/dashboard/triage/', {
+        patient_id: patientId,
+        physician_id: doctorId
+      });
+      // Refresh triage list
+      const res = await apiClient.get('/dashboard/triage/');
+      setPendingPatients(res.data);
+    } catch (err) {
+      alert('Failed to assign physician: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setTriageLoading(false);
+    }
+  };
 
   const storageData = [
     { name: 'Used', value: summary?.storage_stats?.used_percentage || 75, color: '#2D62A8' },
@@ -126,6 +153,42 @@ const Dashboard = ({ onViewChange, summary: initialSummary }) => {
       </div>
 
       <div className="dashboard-main-grid">
+        {pendingPatients.length > 0 && (
+          <div className="dashboard-section triage-section">
+            <div className="section-header">
+              <div className="section-title">
+                <UserPlus size={20} color="#8B5CF6" />
+                <span>Pending Enrollment Triage</span>
+              </div>
+              <span className="badge-count">{pendingPatients.length} Awaiting Doctor</span>
+            </div>
+            <div className="triage-list">
+              {pendingPatients.map(patient => (
+                <div key={patient.id} className="triage-item">
+                  <div className="patient-info">
+                    <span className="patient-name">{patient.name}</span>
+                    <span className="patient-problem" title={patient.diagnosis}>
+                      {patient.diagnosis || "Manual Signup - No clinical notes"}
+                    </span>
+                  </div>
+                  <div className="triage-actions">
+                    <select
+                      disabled={triageLoading}
+                      onChange={(e) => handleAssignDoctor(patient.id, e.target.value)}
+                      defaultValue=""
+                    >
+                      <option value="" disabled>Assign Physician...</option>
+                      {doctors.map(doc => (
+                        <option key={doc.id} value={doc.id}>Dr. {doc.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="dashboard-section logs-section">
           <div className="section-header">
             <div className="section-title">
@@ -235,7 +298,7 @@ const Dashboard = ({ onViewChange, summary: initialSummary }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

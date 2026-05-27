@@ -114,13 +114,13 @@ const DoctorDashboard = () => {
         </div>
         <div className="header-actions-premium">
           <button className="btn-report-bordered" onClick={() => setShowTaskModal(true)}>
-            <ClipboardList size={18} />
+            <ClipboardList size={20} />
             <span>Assign Task</span>
           </button>
-          <button className="btn-new-assessment-filled" onClick={() => setShowUploadModal(true)}>
+          {/* <button className="btn-new-assessment-filled" onClick={() => setShowUploadModal(true)}>
             <Activity size={18} />
             <span>New Assessment</span>
-          </button>
+          </button> */}
         </div>
       </header>
 

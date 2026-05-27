@@ -30,7 +30,11 @@ import './PatientProfile.css';
 import VitalsModal from '../../assessments/VitalsModal/VitalsModal';
 import WoundUploadModal from '../../assessments/WoundUploadModal/WoundUploadModal';
 
-const PatientProfile = ({ patient: initialPatient, onBack }) => {
+const PatientProfile = ({ patient: initialPatient, onBack, onNavigate }) => {
+  const currentUser = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+  const isNurse = currentUser?.role === 'Nurse';
+  const isDoctor = currentUser?.role === 'Doctor' || currentUser?.role === 'Admin';
+
   const [patient, setPatient] = useState(initialPatient || {});
   const [loading, setLoading] = useState(false);
   const [showVitalsModal, setShowVitalsModal] = useState(false);
@@ -133,10 +137,20 @@ const PatientProfile = ({ patient: initialPatient, onBack }) => {
           </div>
 
           <div className="pro-header-actions">
-            <button className="pro-btn-secondary" onClick={() => setShowVitalsModal(true)}>
-              <Activity size={16} /> Record Vitals
-            </button>
-            <button className="pro-btn-primary" onClick={() => setShowUploadModal(true)}>
+            {isDoctor && (
+              <button className="pro-btn-secondary" onClick={() => alert("Edit Patient Details - Coming Soon")}>
+                <Edit size={16} /> Edit Details
+              </button>
+            )}
+            {isNurse && (
+              <button className="pro-btn-secondary" onClick={() => setShowVitalsModal(true)}>
+                <Activity size={16} /> Record Vitals
+              </button>
+            )}
+            <button className="pro-btn-primary" onClick={() => {
+              sessionStorage.setItem('clinical_portal_patient', JSON.stringify(patient));
+              onNavigate('clinical-portal');
+            }}>
               <Plus size={16} /> New Assessment
             </button>
           </div>

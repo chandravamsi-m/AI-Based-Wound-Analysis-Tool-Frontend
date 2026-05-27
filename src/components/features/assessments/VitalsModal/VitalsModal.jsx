@@ -142,21 +142,19 @@ function VitalsModal({ onClose, onSuccess, preSelectedPatientId, taskId }) {
 
                         <div className="form-group">
                             <label>BP (Systolic / Diastolic)</label>
-                            <div className="bp-input-group" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <div className="bp-input-group">
                                 <input
                                     type="number"
                                     value={bpSystolic}
                                     onChange={(e) => setBpSystolic(e.target.value)}
                                     placeholder="120"
-                                    style={{ flex: 1 }}
                                 />
-                                <span style={{ color: '#94a3b8' }}>/</span>
+                                <span className="vitals-slash">/</span>
                                 <input
                                     type="number"
                                     value={bpDiastolic}
                                     onChange={(e) => setBpDiastolic(e.target.value)}
                                     placeholder="80"
-                                    style={{ flex: 1 }}
                                 />
                             </div>
                         </div>

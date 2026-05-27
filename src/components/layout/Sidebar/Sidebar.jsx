@@ -2,9 +2,16 @@ import { LayoutDashboard, Users, FileText, Activity, HardDrive, Settings, Bell, 
 import './Sidebar.css';
 
 function Sidebar({ onSignOut, user, isMobileOpen, onClose, currentView, onViewChange, summary }) {
+  const getDashboardId = () => {
+    if (user?.role === 'Admin') return 'dashboard';
+    if (user?.role === 'Doctor') return 'doctor-dashboard';
+    if (user?.role === 'Patient') return 'patient-portal';
+    return 'nurse-dashboard';
+  };
+
   const menuItems = [
     {
-      id: user?.role === 'Admin' ? 'dashboard' : (user?.role === 'Doctor' ? 'doctor-dashboard' : 'nurse-dashboard'),
+      id: getDashboardId(),
       icon: LayoutDashboard,
       label: 'Dashboard'
     },

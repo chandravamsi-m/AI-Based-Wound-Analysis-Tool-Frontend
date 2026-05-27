@@ -5,6 +5,7 @@ import UserManagement from './pages/admin/UserManagement/UserManagement'
 import SplashScreen from './pages/auth/SplashScreen/SplashScreen'
 import IntroScreens from './pages/auth/IntroScreens/IntroScreens'
 import Login from './pages/auth/Login/Login'
+import Signup from './pages/auth/Signup/Signup'
 import Dashboard from './pages/admin/Dashboard/Dashboard'
 import DoctorDashboard from './pages/doctor/DoctorDashboard/DoctorDashboard'
 import Patients from './pages/common/Patients/PatientsList'
@@ -12,6 +13,9 @@ import AddPatient from './pages/common/Patients/AddPatient'
 import Assessments from './pages/common/Assessments/AssessmentHistory'
 import Reports from './pages/doctor/Reports/Reports'
 import NurseDashboard from './pages/nurse/NurseDashboard/NurseDashboard'
+import ClinicalPortal from './components/features/patients/PatientProfile/ClinicalPortal'
+import PatientPortal from './pages/patient/PatientPortal'
+import PatientOnboarding from './pages/patient/Onboarding/PatientOnboarding'
 import SystemLogs from './pages/admin/SystemLogs/SystemLogs'
 import Storage from './pages/admin/Storage/Storage'
 import Settings from './pages/admin/Settings/Settings'
@@ -21,7 +25,7 @@ import authService from './services/authService'
 import './App.css'
 
 function App() {
-  const [view, setView] = useState('splash') // 'splash', 'intro', 'login', 'app'
+  const [view, setView] = useState('splash') // 'splash', 'intro', 'login', 'signup', 'app'
   const [activeSubView, setActiveSubView] = useState('dashboard')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentUser, setCurrentUser] = useState(null)
@@ -49,6 +53,10 @@ function App() {
         if (user.role === 'Admin') setActiveSubView('dashboard');
         else if (user.role === 'Doctor') setActiveSubView('doctor-dashboard');
         else if (user.role === 'Nurse') setActiveSubView('nurse-dashboard');
+        else if (user.role === 'Patient') {
+          if (user.is_profile_complete) setActiveSubView('patient-portal');
+          else setActiveSubView('patient-onboarding');
+        }
       }
     }
   }, [])
@@ -101,11 +109,20 @@ function App() {
       setActiveSubView('doctor-dashboard')
     } else if (user.role === 'Nurse') {
       setActiveSubView('nurse-dashboard')
+    } else if (user.role === 'Patient') {
+      if (user.is_profile_complete) {
+        setActiveSubView('patient-portal')
+      } else {
+        setActiveSubView('patient-onboarding')
+      }
     }
 
     // Explicitly store the initial role-based view
     const storage = localStorage.getItem('isAuthenticated') === 'true' ? localStorage : sessionStorage;
-    storage.setItem('activeSubView', user.role === 'Admin' ? 'dashboard' : (user.role === 'Doctor' ? 'doctor-dashboard' : 'nurse-dashboard'));
+    const initialView = user.role === 'Admin' ? 'dashboard' :
+      (user.role === 'Doctor' ? 'doctor-dashboard' :
+        (user.role === 'Patient' ? (user.is_profile_complete ? 'patient-portal' : 'patient-onboarding') : 'nurse-dashboard'));
+    storage.setItem('activeSubView', initialView);
   }
 
   const handleLogout = async () => {
@@ -127,20 +144,37 @@ function App() {
   }
 
   const renderSubView = () => {
+    // MANDATORY ONBOARDING: If patient has not completed profile, force onboarding view
+    if (currentUser?.role === 'Patient' && !currentUser?.is_profile_complete) {
+      return (
+        <PatientOnboarding
+          onComplete={() => {
+            // Update local user state
+            const updatedUser = { ...currentUser, is_profile_complete: true };
+            setCurrentUser(updatedUser);
+
+            // Persist to storage
+            const storage = localStorage.getItem('isAuthenticated') === 'true' ? localStorage : sessionStorage;
+            storage.setItem('user', JSON.stringify(updatedUser));
+
+            // Now they can go to their portal
+            setActiveSubView('patient-portal');
+          }}
+          onSignOut={handleLogout}
+        />
+      );
+    }
+
     switch (activeSubView) {
       case 'dashboard':
         if (currentUser?.role === 'Admin') {
           return <Dashboard onViewChange={setActiveSubView} summary={summary} />;
         }
-        // Fall through or handle other roles if 'dashboard' is a generic entry point
-        // For now, assuming 'dashboard' is specifically for Admin.
-        // If a Doctor or Nurse somehow lands on 'dashboard', they won't see anything here.
-        // This might need further refinement based on UX.
-        return null; // Or a default message/component
+        return null;
       case 'doctor-dashboard':
         return <DoctorDashboard />;
       case 'patients':
-        return <Patients onAddPatient={() => setActiveSubView('add-patient')} />;
+        return <Patients onAddPatient={() => setActiveSubView('add-patient')} onNavigate={setActiveSubView} />;
       case 'add-patient':
         return <AddPatient onBack={() => setActiveSubView('patients')} />;
       case 'assessments':
@@ -159,16 +193,25 @@ function App() {
         return <Settings />;
       case 'alerts':
         return <Alerts onAlertDismissed={fetchSummary} />;
+      case 'clinical-portal':
+        return <ClinicalPortal onBack={() => setActiveSubView('patients')} />;
+      case 'patient-portal':
+        return <PatientPortal />;
+      case 'patient-onboarding':
+        // This is now redundant but kept for safety if activeSubView is specifically set
+        return <PatientOnboarding onComplete={() => {
+          const updatedUser = { ...currentUser, is_profile_complete: true };
+          setCurrentUser(updatedUser);
+          const storage = localStorage.getItem('isAuthenticated') === 'true' ? localStorage : sessionStorage;
+          storage.setItem('user', JSON.stringify(updatedUser));
+          setActiveSubView('patient-portal');
+        }} />;
       default:
-        // This default case might need to be more robust, e.g., redirect to a role-specific default
-        if (currentUser?.role === 'Admin') {
-          return <Dashboard onViewChange={setActiveSubView} summary={summary} />;
-        } else if (currentUser?.role === 'Doctor') {
-          return <DoctorDashboard />;
-        } else if (currentUser?.role === 'Nurse') {
-          return <NurseDashboard />;
-        }
-        return null; // Or a generic "Access Denied" component
+        if (currentUser?.role === 'Admin') return <Dashboard onViewChange={setActiveSubView} summary={summary} />;
+        if (currentUser?.role === 'Doctor') return <DoctorDashboard />;
+        if (currentUser?.role === 'Nurse') return <NurseDashboard onNavigate={setActiveSubView} />;
+        if (currentUser?.role === 'Patient') return <PatientPortal />;
+        return null;
     }
   };
 
@@ -180,23 +223,32 @@ function App() {
     return <IntroScreens onFinished={() => setView('login')} />
   }
 
-  if (view === 'login' || !isAuthenticated) {
-    return <Login onLoginSuccess={handleLoginSuccess} />
+  if (view === 'signup') {
+    return <Signup onBack={() => setView('login')} />
   }
+
+  if (view === 'login' || !isAuthenticated) {
+    return <Login onLoginSuccess={handleLoginSuccess} onSignupProgress={() => setView('signup')} />
+  }
+
+  // Determine if we should show navigation (sidebar/navbar)
+  const isPatientOnboarding = currentUser?.role === 'Patient' && !currentUser?.is_profile_complete;
 
   return (
     <div className="app">
-      <Navbar user={currentUser} onMenuToggle={toggleMobileMenu} />
-      <Sidebar
-        onSignOut={handleLogout}
-        user={currentUser}
-        isMobileOpen={isMobileMenuOpen}
-        onClose={closeMobileMenu}
-        currentView={activeSubView}
-        onViewChange={setActiveSubView}
-        summary={summary}
-      />
-      <main className="main-content">
+      {!isPatientOnboarding && <Navbar user={currentUser} onMenuToggle={toggleMobileMenu} />}
+      {!isPatientOnboarding && (
+        <Sidebar
+          onSignOut={handleLogout}
+          user={currentUser}
+          isMobileOpen={isMobileMenuOpen}
+          onClose={closeMobileMenu}
+          currentView={activeSubView}
+          onViewChange={setActiveSubView}
+          summary={summary}
+        />
+      )}
+      <main className={isPatientOnboarding ? "main-content-onboarding" : "main-content"}>
         {renderSubView()}
       </main>
     </div>

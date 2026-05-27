@@ -173,54 +173,55 @@ function WoundUploadModal({ onClose, onSuccess, onCompleted, preSelectedPatientI
                         </div>
                     </form>
                 ) : (
-                    <div className="modal-form analysis-results">
+                    <div className="modal-form analysis-report">
                         {analysisResult.is_escalated && (
-                            <div style={{ marginBottom: '15px', padding: '12px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#dc2626', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div className="escalation-alert">
                                 <AlertCircle size={20} />
                                 <span>ESCALATION ALERT: High Severity ({analysisResult.stage}) - Doctor Notified</span>
                             </div>
                         )}
 
-                        <div className="report-header" style={{ marginBottom: '15px', padding: '15px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '13px' }}>
-                                <div>
-                                    <span style={{ color: '#64748b' }}>Patient:</span>
-                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>{analysisResult.patient_name || 'N/A'}</div>
+                        <div className="report-summary-card">
+                            <div className="report-summary-grid">
+                                <div className="report-field">
+                                    <label>Patient:</label>
+                                    <span>{analysisResult.patient_name || 'N/A'}</span>
                                 </div>
-                                <div>
-                                    <span style={{ color: '#64748b' }}>Assessed By:</span>
-                                    <div style={{ fontWeight: '600', color: '#0f172a' }}>{analysisResult.nurse_name || 'N/A'}</div>
+                                <div className="report-field">
+                                    <label>Assessed By:</label>
+                                    <span>{analysisResult.nurse_name || 'N/A'}</span>
                                 </div>
-                                <div>
-                                    <span style={{ color: '#64748b' }}>Date:</span>
-                                    <div style={{ fontWeight: '500' }}>{new Date(analysisResult.created_at).toLocaleString()}</div>
+                                <div className="report-field">
+                                    <label>Date:</label>
+                                    <span>{new Date(analysisResult.created_at).toLocaleString()}</span>
                                 </div>
                                 {analysisResult.notes && (
-                                    <div style={{ gridColumn: 'span 2', marginTop: '5px', borderTop: '1px solid #e2e8f0', paddingTop: '5px' }}>
-                                        <span style={{ color: '#64748b' }}>Notes:</span> {analysisResult.notes}
+                                    <div className="report-field report-notes">
+                                        <label>Notes:</label>
+                                        <span>{analysisResult.notes}</span>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div className="result-image-container" style={{ textAlign: 'center', marginBottom: '20px' }}>
-                            <img src={analysisResult.image} alt="Analyzed Wound" style={{ maxHeight: '200px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+                        <div className="analysis-image-wrapper">
+                            <img src={analysisResult.image} alt="Analyzed Wound" />
                         </div>
 
-                        <div className="metrics-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
-                            <div className="metric-card" style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                                <h4 style={{ margin: '0 0 5px 0', color: '#64748b', fontSize: '14px' }}>Wound Width</h4>
-                                <p style={{ margin: 0, fontSize: '24px', fontWeight: '600', color: '#0f172a' }}>{analysisResult.width} cm</p>
+                        <div className="analysis-metrics-row">
+                            <div className="metric-card">
+                                <h4>Wound Width</h4>
+                                <p className="metric-value">{analysisResult.width} cm</p>
                             </div>
-                            <div className="metric-card" style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                                <h4 style={{ margin: '0 0 5px 0', color: '#64748b', fontSize: '14px' }}>Wound Depth</h4>
-                                <p style={{ margin: 0, fontSize: '24px', fontWeight: '600', color: '#0f172a' }}>{analysisResult.depth} cm</p>
+                            <div className="metric-card">
+                                <h4>Wound Depth</h4>
+                                <p className="metric-value">{analysisResult.depth} cm</p>
                             </div>
                         </div>
 
-                        <div className="metric-card full" style={{ background: '#f0f9ff', padding: '15px', borderRadius: '8px', border: '1px solid #bae6fd', marginBottom: '20px' }}>
-                            <h4 style={{ margin: '0 0 5px 0', color: '#0369a1', fontSize: '14px' }}>AI Stage Classification</h4>
-                            <p style={{ margin: 0, fontSize: '24px', fontWeight: '600', color: '#0284c7' }}>{analysisResult.stage}</p>
+                        <div className="metric-card highlight">
+                            <h4>AI Stage Classification</h4>
+                            <p className="metric-value">{analysisResult.stage}</p>
                         </div>
 
                         <div className="modal-footer">

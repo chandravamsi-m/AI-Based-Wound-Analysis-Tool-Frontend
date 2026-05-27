@@ -119,3 +119,115 @@
     background-color: #94a3b8;
     cursor: not-allowed;
 }
+.analysis-report {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.escalation-alert {
+    padding: 12px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.report-summary-card {
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.report-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    font-size: 13px;
+}
+
+.report-field label {
+    display: block;
+    color: #64748b;
+    margin-bottom: 2px;
+}
+
+.report-field span {
+    display: block;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.report-notes {
+    grid-column: span 2;
+    margin-top: 5px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 10px;
+}
+
+.analysis-image-wrapper {
+    text-align: center;
+}
+
+.analysis-image-wrapper img {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.analysis-metrics-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.metric-card {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.metric-card.highlight {
+    background: #f0f9ff;
+    border-color: #bae6fd;
+}
+
+.metric-card h4 {
+    margin: 0 0 5px 0;
+    color: #64748b;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.metric-card.highlight h4 {
+    color: #0369a1;
+}
+
+.metric-card .metric-value {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.metric-card.highlight .metric-value {
+    color: #0284c7;
+}
+
+@media (max-width: 768px) {
+    .report-summary-grid, .analysis-metrics-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .report-notes {
+        grid-column: span 1;
+    }
+}

@@ -1,0 +1,244 @@
+.onboarding-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+.onboarding-header {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.onboarding-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.onboarding-logo {
+    height: 40px;
+    width: auto;
+}
+
+.btn-signout-onboarding {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-signout-onboarding:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+.onboarding-brand-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+}
+
+.onboarding-brand-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin: 4px 0 0 0;
+}
+
+.onboarding-card {
+    background: white;
+    width: 100%;
+    max-width: 640px;
+    border-radius: 28px;
+    padding: 48px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f1f5f9;
+}
+
+.onboarding-progress {
+    margin-bottom: 40px;
+}
+
+.progress-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.progress-bar-container {
+    height: 6px;
+    background: #f1f5f9;
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #2563eb;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ob-section-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.ob-icon-circle {
+    width: 56px;
+    height: 56px;
+    background: #eff6ff;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ob-section-header h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.ob-section-header p {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.ob-section-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.ob-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.ob-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ob-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ob-group input,
+.ob-group select,
+.ob-group textarea {
+    padding: 14px 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 15px;
+    transition: all 0.2s;
+    background: #f8fafc;
+}
+
+.ob-group input:focus,
+.ob-group select:focus,
+.ob-group textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.specialist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.specialist-option {
+    padding: 20px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f8fafc;
+    position: relative;
+    text-align: center;
+}
+
+.specialist-option:hover {
+    border-color: #2563eb;
+    background: white;
+    transform: translateY(-2px);
+}
+
+.specialist-option.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.s-check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #2563eb;
+}
+
+.ob-error {
+    background: #fef2f2;
+    color: #ef4444;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.ob-footer {
+    display: flex;
+    align-items: center;
+    margin-top: 32px;
+}
+
+@media (max-width: 640px) {
+    .onboarding-card {
+        padding: 24px;
+    }
+    .ob-grid {
+        grid-template-columns: 1fr;
+    }
+    .specialist-grid {
+        grid-template-columns: 1fr;
+    }
+}
